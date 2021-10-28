@@ -1,0 +1,46 @@
+*{  
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body,
+html,
+#app{
+    height: 100%;
+    width: 100%;
+}
+
+.el-breadcrumb {
+    margin-bottom: 15px;
+    font-size: 12px;
+  }
+  
+  .el-card {
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15) !important;
+  }
+  
+  .el-table{
+    margin-top: 15px;
+    font-size: 12px;
+  }
+  .el-cascader{
+    width: 50%;
+  }
+  
+  .el-pagination{
+    margin-top: 0.8em;
+  }
+  
+  .rightTags{
+    display: flex;
+    align-items: center;
+  }
+  
+  .el-steps{
+    margin: 15px 0;
+  }
+  
+  .el-step__title{
+  font-size: 15px !important;
+  }
