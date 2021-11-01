@@ -3,7 +3,7 @@
  * @Date: 2021-10-14 18:32:18
  * @Description:
  * @FilePath: \music-web-vue\src\store\index.js
- * @LastEditTime: 2021-10-28 02:27:25
+ * @LastEditTime: 2021-10-31 00:15:18
  * @LastEditors: Please set LastEditors
  */
 import { createStore } from 'vuex'

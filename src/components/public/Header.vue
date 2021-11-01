@@ -3,7 +3,7 @@
  * @Date: 2021-10-15 14:26:59
  * @Description: 
  * @FilePath: \music-web-vue\src\components\public\Header.vue
- * @LastEditTime: 2021-10-28 04:47:14
+ * @LastEditTime: 2021-10-30 23:45:22
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -40,7 +40,7 @@
     </div>
   </div>
   <!-- 弹窗区域 -->
-  <el-dialog :title="titles" v-model="dialogVisible" width="50%" @close="avatarDialogClosed">
+  <el-dialog :title="titles" v-model="dialogVisible" width="50%" @close="dialogClosed">
     <el-form ref="sumbitFormRef" label-width="100px">
       <el-form-item v-if="titles == '设置头像'" label="图片地址:" prop="avatar"
         ><el-input class="long" v-model="avatarUrl" placeholder="请输入图片的网络地址" @change="avatarChange"> </el-input>
@@ -141,6 +141,8 @@ export default {
       }
       this.fullscreen = !this.fullscreen
     },
+    // 弹窗关闭事件
+    dialogClosed() {},
   },
 }
 </script>

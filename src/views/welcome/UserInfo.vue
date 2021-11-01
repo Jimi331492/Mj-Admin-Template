@@ -3,7 +3,7 @@
  * @Date: 2021-10-26 11:25:27
  * @Description: 
  * @FilePath: \music-web-vue\src\views\welcome\UserInfo.vue
- * @LastEditTime: 2021-10-28 04:50:35
+ * @LastEditTime: 2021-11-01 22:24:14
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -89,7 +89,11 @@
         </el-collapse-item>
         <el-collapse-item title="角色信息" name="roleInfo">
           <!-- 角色信息展示table -->
-          <el-table></el-table>
+          <el-table :data="userInfo.roles">
+            <el-table-column type="index"></el-table-column>
+            <el-table-column prop="roleName" label="角色名"></el-table-column>
+            <el-table-column prop="remark" label="描述"></el-table-column>
+          </el-table>
         </el-collapse-item>
         <el-collapse-item title="权限信息" name="authoInfo">
           <!-- 权限信息展示table -->
@@ -216,19 +220,6 @@ export default {
   },
   created() {
     this.getUserInfo()
-    // var str1 = JSON.stringify(this.userInfo.createTime)
-    // var unno = JSON.parse(str1)
-    // console.log(unno)
-    // console.log(typeof unno)
-    // console.log(str1)
-    // console.log(typeof str1)
-    let array = [...this.userInfo.createTime]
-    var str = JSON.stringify(array[0] + '年' + array[1] + '月' + array[2] + '日' + array[3] + '时' + array[4] + '分')
-    console.log(str)
-    // console.log(typeof array)
-    // for (let item of array) {
-    //   console.log(item)
-    // }
   },
   computed: {
     getUserBaseInfo() {

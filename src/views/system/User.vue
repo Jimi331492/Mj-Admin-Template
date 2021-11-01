@@ -3,7 +3,7 @@
  * @Date: 2021-10-24 22:51:08
  * @Description: 
  * @FilePath: \music-web-vue\src\views\system\User.vue
- * @LastEditTime: 2021-10-25 17:25:47
+ * @LastEditTime: 2021-11-01 18:17:17
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -33,12 +33,16 @@
       </el-row>
 
       <!-- 用户列表区域 -->
-      <el-table :data="userlist" border stripe>
+      <el-table :data="userList" border stripe>
         <el-table-column type="index"></el-table-column>
         <el-table-column prop="username" label="用户名"></el-table-column>
         <el-table-column prop="email" label="邮箱"> </el-table-column>
         <el-table-column prop="mobile" label="电话"> </el-table-column>
-        <el-table-column prop="role_name" label="角色"> </el-table-column>
+        <el-table-column prop="roles" label="角色"
+          ><template v-slot="scope">
+            <el-tag v-for="item in scope.row.roles" :key="item">{{ item.roleName }}</el-tag>
+          </template></el-table-column
+        >
 
         <el-table-column label="状态">
           <template v-slot="scope">
@@ -50,7 +54,7 @@
           <template v-slot="scope">
             <!-- 编辑按钮 -->
             <el-tooltip class="item" effect="dark" content="编辑用户" placement="top" :enterable="false">
-              <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.userId)"></el-button>
+              <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row)"></el-button>
             </el-tooltip>
 
             <!-- 删除按钮 -->
@@ -74,7 +78,7 @@
     <!-- 这是添加用户的对话框 -->
     <el-dialog title="添加用户" v-model="addDialogVisible" width="50%" @close="addDialogClosed">
       <!-- 内容主体 -->
-      <el-form ref="addFormRef" :model="addForm" label-width="70px" :rules="addFormRules">
+      <el-form ref="addFormRef" :model="addForm" label-width="70px" :rules="rules">
         <el-form-item label="用户名" prop="username">
           <el-input v-model="addForm.username"></el-input>
         </el-form-item>
@@ -86,6 +90,9 @@
         </el-form-item>
         <el-form-item label="手机" prop="mobile">
           <el-input v-model="addForm.mobile"></el-input>
+        </el-form-item>
+        <el-form-item label="描述" prop="description">
+          <el-input type="textarea" v-model="addForm.description"></el-input>
         </el-form-item>
       </el-form>
       <!-- 底部区域 -->
@@ -99,16 +106,42 @@
 
     <!-- 修改用户的对话框 -->
     <el-dialog title="修改用户" v-model="editDialogVisible" width="50%" @close="editDialogClosed">
-      <!-- 内容主体 -->
-      <el-form ref="editFormRef" :model="editForm" label-width="70px" :rules="editFormRules">
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="editForm.username" disabled></el-input>
+      <!-- 修改用户表单 -->
+      <el-form ref="editFormRef" :model="userInfo" label-width="120px" :rules="rules">
+        <!-- 用户名 -->
+        <el-form-item label="名称:" prop="username">
+          <el-input v-model="userInfo.username" @change="usernameChange" />
         </el-form-item>
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="editForm.email"></el-input>
+
+        <!-- 性别 -->
+        <el-form-item label="性别:" prop="ssex">
+          <el-radio-group v-model="userInfo.ssex" @change="ssexChange">
+            <el-radio label="0">男</el-radio>
+            <el-radio label="1">女</el-radio>
+            <el-radio label="2">保密</el-radio>
+          </el-radio-group>
         </el-form-item>
-        <el-form-item label="手机" prop="mobile">
-          <el-input v-model="editForm.mobile"></el-input>
+
+        <!-- 用户邮箱 -->
+        <el-form-item label="邮箱:" prop="email">
+          <el-input v-model="userInfo.email" @change="emailChange" />
+        </el-form-item>
+
+        <!-- 用户手机号 -->
+        <el-form-item label="手机号:" prop="mobile">
+          <el-input v-model="userInfo.mobile" @change="mobileChange" />
+        </el-form-item>
+
+        <!-- 描述 -->
+        <el-form-item label="描述:" prop="description">
+          <el-input
+            class="inputDesc"
+            v-model="userInfo.description"
+            :autosize="{ minRows: 2, maxRows: 4 }"
+            type="textarea"
+            placeholder="请输入"
+            @change="descriptionChange"
+          />
         </el-form-item>
       </el-form>
       <!-- 底部区域 -->
@@ -125,11 +158,11 @@
       <!-- 内容主体 -->
       <div>
         <p>当前的用户:{{ userInfo.username }}</p>
-        <p>当前的角色:{{ userInfo.role_name }}</p>
+        <p>当前的角色:{{ userInfo.roleName }}</p>
         <p>
           分配新角色:
-          <el-select v-model="selectRoleId" placeholder="请选择">
-            <el-option v-for="item in rolelist" :key="item.id" :label="item.roleName" :value="item.id"></el-option>
+          <el-select v-model="selectedRoleId" placeholder="请选择">
+            <el-option v-for="item in roleList" :key="item.roleId" :label="item.roleName" :value="item.roleId"></el-option>
           </el-select>
         </p>
       </div>
@@ -145,7 +178,8 @@
 </template>
 
 <script>
-import { queryUser } from '../../api/system/user'
+import { register, queryUser, deleteUser, lockUser, updateUserInfo, setRole } from '../../api/system/user'
+import { queryRole } from '../../api/system/role'
 export default {
   data() {
     // 邮箱验证的规则
@@ -178,18 +212,19 @@ export default {
         // 每页显示多少条数据
         pageSize: 5,
       },
-      userlist: [],
-      rolelist: [],
+      userList: [],
+      roleList: [],
       limit: 5,
       total: 0,
       addDialogVisible: false,
       editDialogVisible: false,
       showSetRoleVisible: false,
       currentPageSize: 0,
-      selectRoleId: '',
+      selectedRoleId: '',
 
       // 需要被分配角色的用户信息
       userInfo: {},
+      sumbitForm: {}, //上传的表单
 
       // 添加用户的表单数据
       addForm: {
@@ -197,12 +232,13 @@ export default {
         password: '',
         email: '',
         mobile: '',
+        description: '',
       },
       // 查询到的用的表单信息
       editForm: {},
 
       // 添加用户的表单验证规则
-      addFormRules: {
+      rules: {
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
           {
@@ -243,14 +279,13 @@ export default {
   },
   methods: {
     async getUserList() {
-      queryUser(this.queryInfo).then((res) => {
-        console.log(res)
-        if (res.data.code !== 200) {
-          return this.$message.error('获取用户列表失败！')
-        }
-        this.userlist = res.data.data.users
-        this.total = res.data.data.total
-      })
+      const { data: res } = await queryUser(this.queryInfo)
+      console.log(res)
+      if (res.code !== 200) {
+        return this.$message.error('获取用户列表失败！')
+      }
+      this.userList = res.data.users
+      this.total = res.data.total
     },
 
     // 监听 CurrentChange 改变的事件
@@ -262,10 +297,23 @@ export default {
 
     // 监听 Swtich 开关状态的改变
     async userStateChange(userInfo) {
-      console.log(userInfo)
+      let paramsBody = new Object()
+
+      paramsBody = {
+        userId: userInfo.userId,
+        status: userInfo.status,
+      }
+      console.log(userInfo.status)
+      console.log(paramsBody)
+
       /**
-       * 调用修改用户的接口
+       * 调用修改用户状态的接口
        */
+      const { data: res } = await lockUser(paramsBody)
+      console.log(res)
+      if (res.code !== 200) return this.$message.error(res.msg)
+      this.$message.success(res.msg)
+      this.getUserList()
     },
 
     // 监听添加用户对话框的关闭事件
@@ -286,6 +334,10 @@ export default {
         /**
          * 调用增加用户的接口
          */
+        const { data: res } = await register(this.addForm)
+        console.log(res)
+        if (res.code !== 200) return this.$message.error(res.msg)
+        this.$message.success(res.msg)
 
         // 隐藏添加用户的对话框
         this.addDialogVisible = false
@@ -294,12 +346,34 @@ export default {
       })
     },
 
-    async showEditDialog(id) {
-      console.log(id)
+    async showEditDialog(row) {
+      console.log(row)
       /**
        * 调用查询用户的接口
        */
+      this.userInfo = row
+      this.sumbitForm.userId = row.userId
       this.editDialogVisible = true
+    },
+
+    // userBaseInfo表单项Change事件
+    usernameChange(value) {
+      this.sumbitForm.username = value
+    },
+    ssexChange(value) {
+      this.sumbitForm.ssex = value
+    },
+    emailChange(value) {
+      this.sumbitForm.email = value
+    },
+    mobileChange(value) {
+      this.sumbitForm.mobile = value
+    },
+    descriptionChange(value) {
+      this.sumbitForm.description = value
+    },
+    avatarChange(value) {
+      this.sumbitForm.avatar = value
     },
 
     // 点击按钮修改用户
@@ -313,16 +387,21 @@ export default {
          * 调用修改用户的接口
          */
 
+        console.log(this.sumbitForm)
+        const { data: res } = await updateUserInfo(this.sumbitForm)
+
+        if (res.code !== 200) return this.$message.error(res.msg)
+
         this.editDialogVisible = false
         this.getUserList()
-        this.$message.success('修改用户成功!')
+        this.$message.success(res.msg)
       })
     },
 
     // 确认删除的弹窗
     async confirmDeleteBox(id) {
       console.log(id)
-      const Result = await this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+      const Result = await this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
@@ -332,9 +411,10 @@ export default {
       /**
        * 调用删除用户的接口
        */
-
+      const { data: res } = await deleteUser(id)
+      if (res.code !== 200) return this.$message.error(res.msg)
+      this.$message.success(res.msg)
       this.getUserList()
-      this.$message.success('删除成功')
     },
 
     async showSetRole(user) {
@@ -345,14 +425,21 @@ export default {
       /**
        * 调用获取所有角色列表的接口
        */
-
+      let params = {
+        currentPage: null,
+        pageSize: null,
+      }
+      const { data: res } = await queryRole(params)
+      // console.log(res)
+      if (res.code !== 200) return this.$message.error(res.msg)
+      this.roleList = res.data.roles
       this.showSetRoleVisible = true
     },
 
     // 监听分配角色对话框的关闭 重置rolelist
     resetSetRoleClosed() {
-      this.selectRoleId = ''
-      this.rolelist = ''
+      this.selectedRoleId = ''
+      this.roleList = ''
       this.userInfo = {}
     },
 
@@ -360,12 +447,29 @@ export default {
       /**
        * 调用给用户分配角色的接口
        */
+      let params = {
+        userId: this.userInfo.userId,
+        roleId: this.selectedRoleId,
+      }
+      const { data: res } = await setRole(params)
+      console.log(res)
+      if (res.code !== 200) return this.$message.error(res.msg)
       this.getUserList()
+      this.$message.success(res.msg)
       this.showSetRoleVisible = false
     },
   },
 }
 </script>
 
-<style lang="less" scoped></style>
->
+<style lang="less" scoped>
+.el-dialog {
+  min-width: 50%;
+  .el-input {
+    width: 300px;
+  }
+}
+.el-tag {
+  margin: 5px 5px;
+}
+</style>

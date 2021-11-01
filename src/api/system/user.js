@@ -3,7 +3,7 @@
  * @Date: 2021-10-13 13:21:41
  * @Description:
  * @FilePath: \music-web-vue\src\api\system\user.js
- * @LastEditTime: 2021-10-28 02:31:45
+ * @LastEditTime: 2021-11-01 01:55:35
  * @LastEditors: Please set LastEditors
  */
 import request from '../../utils/request'
@@ -63,6 +63,35 @@ export function register(data) {
   //传数据写入data，不传则不需要
   return request({
     url: '/user/register',
+    method: 'post',
+    data,
+  })
+}
+
+// 用户删除
+export function deleteUser(data) {
+  //传数据写入data，不传则不需要
+  return request({
+    url: '/user/delete',
+    method: 'post',
+    data,
+  })
+}
+
+// 锁定用户
+export function lockUser(data) {
+  //传数据写入data，不传则不需要
+  return request({
+    url: '/user/lockUser',
+    method: 'post',
+    data,
+  })
+}
+// 分配角色
+export function setRole(data) {
+  //传数据写入data，不传则不需要
+  return request({
+    url: '/user/setRole',
     method: 'post',
     data,
   })

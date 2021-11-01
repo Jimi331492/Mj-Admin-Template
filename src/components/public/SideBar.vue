@@ -3,7 +3,7 @@
  * @Date: 2021-10-15 14:27:30
  * @Description: 
  * @FilePath: \music-web-vue\src\components\public\SideBar.vue
- * @LastEditTime: 2021-10-25 00:52:09
+ * @LastEditTime: 2021-11-02 02:12:30
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -38,7 +38,8 @@
 </template>
 
 <script>
-import { getMenu } from '../../api/home/home'
+// import { getMenu } from '../../api/home/home'
+import { getRoleMenus } from '../../api/system/role'
 export default {
   data() {
     return {
@@ -64,15 +65,21 @@ export default {
     isCollapse() {
       return this.$store.state.collapse
     },
+    getRoleId() {
+      return this.$store.state.userBaseInfo
+    },
   },
   methods: {
     // 获取菜单列表
     async getMenuList() {
-      await getMenu().then((res) => {
-        // console.log(res)
-        if (res.data.code !== 200) return this.$message.error('获取菜单列表失败！')
-        this.menuList = res.data.data
-      })
+      var role = this.getRoleId.roles
+      console.log(role)
+      var roleId = role[0].roleId
+      const { data: res } = await getRoleMenus(roleId)
+
+      // console.log(res)
+      if (res.code !== 200) return this.$message.error('获取菜单列表失败！')
+      this.menuList = res.data
     },
     btn(e) {
       console.log(e)

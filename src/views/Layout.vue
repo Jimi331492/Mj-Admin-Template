@@ -3,7 +3,7 @@
  * @Date: 2021-10-15 14:26:34
  * @Description: 
  * @FilePath: \music-web-vue\src\views\Layout.vue
- * @LastEditTime: 2021-10-28 02:26:10
+ * @LastEditTime: 2021-10-31 00:19:48
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -23,7 +23,9 @@ import vHeader from '../components/public/Header.vue'
 import vSiderBar from '../components/public/SideBar.vue'
 export default {
   data() {
-    return {}
+    return {
+      userId: 0,
+    }
   },
   components: {
     vHeader,
@@ -44,13 +46,13 @@ export default {
   },
   methods: {
     async getUserBaseInfo() {
-      console.log(this.isUserId)
-      const { data: res } = await getUserInfo(this.isUserId)
+      this.userId = this.isUserId
+      console.log(this.userId)
+      const { data: res } = await getUserInfo(this.userId)
       console.log(res)
       if (res.code !== 200) return this.$message.error(res.msg)
       this.$store.commit('setAvatarUrl', res.data.avatar)
       this.$store.commit('setUserBaseInfo', res.data)
-      this.$message.success(res.data.username + '  欢迎回来！！')
     },
   },
 }

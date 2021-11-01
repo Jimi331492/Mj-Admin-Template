@@ -87,6 +87,7 @@ export default {
         window.localStorage.setItem('token', this.token)
         this.$store.commit('setUserId', res.data.userId)
         // 2.通过编程式导航跳转到后台主页，/home
+        this.$message.success('登录成功！')
         this.$router.push('/home')
       })
     },
