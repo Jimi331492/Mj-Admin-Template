@@ -3,7 +3,7 @@
  * @Date: 2021-10-24 22:51:08
  * @Description: 
  * @FilePath: \music-web-vue\src\views\system\User.vue
- * @LastEditTime: 2021-11-02 02:17:24
+ * @LastEditTime: 2021-11-02 21:47:53
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -182,7 +182,7 @@
 
 <script>
 import { register, queryUser, deleteUser, lockUser, updateUserInfo, setRole } from '../../api/system/user'
-import { queryRole } from '../../api/system/role'
+import { selectAllRole } from '../../api/system/role'
 export default {
   data() {
     // 邮箱验证的规则
@@ -428,11 +428,8 @@ export default {
       /**
        * 调用获取所有角色列表的接口
        */
-      let params = {
-        currentPage: null,
-        pageSize: null,
-      }
-      const { data: res } = await queryRole(params)
+
+      const { data: res } = await selectAllRole()
       // console.log(res)
       if (res.code !== 200) return this.$message.error(res.msg)
       this.roleList = res.data.roles

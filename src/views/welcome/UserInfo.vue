@@ -3,7 +3,7 @@
  * @Date: 2021-10-26 11:25:27
  * @Description: 
  * @FilePath: \music-web-vue\src\views\welcome\UserInfo.vue
- * @LastEditTime: 2021-11-01 22:24:14
+ * @LastEditTime: 2021-11-02 22:44:42
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -97,7 +97,28 @@
         </el-collapse-item>
         <el-collapse-item title="权限信息" name="authoInfo">
           <!-- 权限信息展示table -->
-          <el-table></el-table>
+          <el-row :class="['bdbottom', index1 === 0 ? 'bdtop' : '', 'rightTags']" v-for="(item1, index1) in role.menus" :key="item1.menuId">
+            <!-- 渲染一级权限 -->
+            <el-col :span="5">
+              <el-tag>{{ item1.menuName }}</el-tag>
+              <i class="el-icon-caret-right"></i>
+            </el-col>
+            <!-- 渲染二级和三级权限 -->
+            <el-col :span="19">
+              <!-- 通过for循环 嵌套渲染二级权限 -->
+              <el-row :class="[index2 === 0 ? '' : 'bdtop', 'rightTags']" v-for="(item2, index2) in item1.menus" :key="item2.menuId">
+                <el-col :span="4">
+                  <el-tag type="success">{{ item2.menuName }}</el-tag>
+                  <i class="el-icon-caret-right"></i>
+                </el-col>
+                <el-col :span="20">
+                  <el-tag v-for="item3 in item2.menus" :key="item3.id" type="warning" closable @close="removeRightById(scope.row, item3.menuId)">
+                    {{ item3.menuName }}
+                  </el-tag>
+                </el-col>
+              </el-row>
+            </el-col>
+          </el-row>
         </el-collapse-item>
       </el-collapse>
     </el-card>

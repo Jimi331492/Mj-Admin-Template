@@ -3,7 +3,7 @@
  * @Date: 2021-10-24 22:51:29
  * @Description: 
  * @FilePath: \music-web-vue\src\views\system\Menu.vue
- * @LastEditTime: 2021-11-02 03:50:00
+ * @LastEditTime: 2021-11-02 22:41:36
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -17,8 +17,8 @@
 
     <!-- 卡片内容区 -->
     <el-card>
-      <!-- 用户列表区域 -->
-      <el-table :data="rightlist" border stripe default-expand-all row-key="menuId" :tree-props="{ children: 'childMenu' }">
+      <!-- 列表区域 -->
+      <el-table :data="rightlist" border stripe default-expand-all row-key="menuId" :tree-props="{ children: 'menus' }">
         <el-table-column type="index"></el-table-column>
         <el-table-column prop="menuName" label="权限名称" sortable></el-table-column>
         <el-table-column prop="url" label="路径"></el-table-column>

@@ -3,7 +3,7 @@
  * @Date: 2021-10-24 22:51:19
  * @Description: 
  * @FilePath: \music-web-vue\src\views\system\Role.vue
- * @LastEditTime: 2021-11-02 18:02:58
+ * @LastEditTime: 2021-11-03 02:46:56
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -23,24 +23,24 @@
         <!-- 展开列 -->
         <el-table-column type="expand">
           <template v-slot="scope">
-            <el-row :class="['bdbottom', index1 === 0 ? 'bdtop' : '', 'rightTags']" v-for="(item1, index1) in scope.row.children" :key="item1.id">
+            <el-row :class="['bdbottom', index1 === 0 ? 'bdtop' : '', 'rightTags']" v-for="(item1, index1) in scope.row.menus" :key="item1.menuId">
               <!-- 渲染一级权限 -->
               <el-col :span="5">
-                <el-tag>{{ item1.authName }}</el-tag>
+                <el-tag closable @close="removeRightById(scope.row, item1.menuId)">{{ item1.menuName }}</el-tag>
                 <i class="el-icon-caret-right"></i>
               </el-col>
               <!-- 渲染二级和三级权限 -->
               <el-col :span="19">
                 <!-- 通过for循环 嵌套渲染二级权限 -->
-                <el-row :class="[index2 === 0 ? '' : 'bdtop', 'rightTags']" v-for="(item2, index2) in item1.children" :key="item2.id">
+                <el-row :class="[index2 === 0 ? '' : 'bdtop', 'rightTags']" v-for="(item2, index2) in item1.menus" :key="item2.menuId">
                   <el-col :span="4">
-                    <el-tag type="success">{{ item2.authName }}</el-tag>
-                    <i class="el-icon-caret-right"></i>
+                    <el-tag type="success" closable @close="removeRightById(scope.row, item2.menuId)">{{ item2.menuName }}</el-tag>
+                    <!-- <i class="el-icon-caret-right"></i> -->
                   </el-col>
-                  <el-col :span="20">
-                    <el-tag v-for="item3 in item2.children" :key="item3.id" type="warning" closable @close="removeRightById(scope.row, item3.id)">
-                      {{ item3.authName }}
-                    </el-tag>
+                  <el-col :span="15">
+                    <!-- <el-tag v-for="item3 in item2.menus" :key="item3.id" type="warning">
+                      {{ item3.menuName }}
+                    </el-tag> -->
                   </el-col>
                 </el-row>
               </el-col>
@@ -71,9 +71,9 @@
         </el-table-column>
       </el-table>
 
-      <!-- 分页区域 -->
+      <!-- 分页区域
       <el-pagination @current-change="handleCurrentChange" :page-size="limit" :page-sizes="[4]" layout="total, prev, pager, next, jumper" :total="total">
-      </el-pagination>
+      </el-pagination> -->
     </el-card>
 
     <!-- 这是添加角色的对话框 -->
@@ -119,7 +119,7 @@
     <!-- 这是分配权限的对话框 -->
     <el-dialog title="分配权限" v-model="showSetRightVisible" width="50%" @close="resetSetRights">
       <!-- 内容主体 -->
-      <el-tree :data="rightlist" :props="treeProps" show-checkbox node-key="id" default-expand-all :default-checked-keys="defKeys" ref="treeRef"></el-tree>
+      <el-tree :data="rightlist" :props="treeProps" show-checkbox node-key="menuId" default-expand-all :default-checked-keys="defKeys" ref="treeRef"></el-tree>
       <!-- 底部区域 -->
       <template #footer>
         <span class="dialog-footer">
@@ -132,20 +132,21 @@
 </template>
 
 <script>
-import { queryRole, addRole, deleteRole, queryRoleById } from '../../api/system/role'
+import { selectAllRole, addRole, deleteRole, queryRoleById, setAuth, deleteAuth, updataRoleInfo } from '../../api/system/role'
+import { getMenu } from '../../api/system/menu'
 export default {
   data() {
     return {
       // 分页获取角色列表的参数对象
-      limit: 5,
-      total: 0,
-      queryInfo: {
-        queryKey: '',
-        // 当前的页数
-        currentPage: 1,
-        // 每页显示多少条数据
-        pageSize: 5,
-      },
+      // limit: 5,
+      // total: 0,
+      // queryInfo: {
+      //   queryKey: '',
+      //   // 当前的页数
+      //   currentPage: 1,
+      //   // 每页显示多少条数据
+      //   pageSize: 5,
+      // },
 
       rolelist: [],
       rightlist: [],
@@ -161,8 +162,8 @@ export default {
       },
       editRoleForm: {},
       treeProps: {
-        label: 'authName',
-        children: 'children',
+        label: 'menuName',
+        children: 'menus',
       },
       addRoleFormRules: {
         roleName: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
@@ -179,7 +180,7 @@ export default {
   },
   methods: {
     async getRoleList() {
-      const { data: res } = await queryRole(this.queryInfo)
+      const { data: res } = await selectAllRole()
       console.log(res)
       if (res.code !== 200) {
         return this.$message.error('获取角色列表失败！')
@@ -216,7 +217,12 @@ export default {
       const { data: res } = await queryRoleById(id)
       //   console.log(res)
       if (res.code !== 200) return this.$message.error('查询角色失败')
-      this.editRoleForm = res.data
+      // this.editRoleForm = res.data
+      this.editRoleForm = {
+        roleId: res.data.roleId,
+        roleName: res.data.roleName,
+        remark: res.data.remark,
+      }
       this.editRoleVisible = true
     },
 
@@ -225,19 +231,16 @@ export default {
       this.$refs.editRoleFormRef.validate(async (valid) => {
         if (!valid) return
         // console.log(valid)
-        const { data: res } = await this.$http.put('roles/' + this.editRoleForm.roleId, {
-          roleId: this.editRoleForm.roleId,
-          roleName: this.editRoleForm.roleName,
-          remark: this.editRoleForm.remark,
-        })
+        console.log(this.editRoleForm)
+        const { data: res } = await updataRoleInfo(this.editRoleForm)
         // console.log(res)
-        if (res.meta.status !== 200) {
+        if (res.code !== 200) {
           return this.$message.error('修改角色失败!')
         }
         this.getRoleList()
         this.editRoleVisible = false
 
-        this.$message.success('修改用户成功！')
+        this.$message.success('修改角色信息成功！')
       })
     },
     async confirmDeleteRole(id) {
@@ -258,7 +261,7 @@ export default {
     // 根据Id删除对应权限
     async removeRightById(role, rightId) {
       // 弹窗提示用户是否要删除
-      const Result = await this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+      const Result = await this.$confirm('此操作将取消角色该权限, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
@@ -266,18 +269,21 @@ export default {
       if (Result !== 'confirm') {
         return this.$message.info('已经取消删除')
       }
-      const { data: res } = await this.$http.delete(`roles/${role.id}/rights/${rightId}`)
-      if (res.meta.status !== 200) return this.$message.error('取消权限失败!')
+      var roleId = role.roleId
+      const { data: res } = await deleteAuth(roleId, rightId)
+      if (res.code !== 200) return this.$message.error('取消权限失败!')
       // this.getRoleList()
       // vue 3.x不行了 也会刷新了
-      role.children = res.data
+      role.menus = res.data
     },
 
     // 点击按钮展示分配权限对话框
     async showSetRight(role) {
-      this.roleId = role.id
-      const { data: res } = await this.$http.get('rights/tree')
-      if (res.meta.status !== 200) {
+      console.log(1)
+      console.log(role)
+      this.roleId = role.roleId
+      const { data: res } = await getMenu()
+      if (res.code !== 200) {
         return this.$message.error('获取权限列表失败')
       }
       // 把获取到的权限数据保存到rightlist数组中
@@ -288,11 +294,13 @@ export default {
 
     // 通过递归，获取角色下所有的三级权限的id，并保存到defKeys数组中
     getDefKeys(node, arr) {
-      if (!node.children) {
-        return arr.push(node.id)
+      console.log(node)
+      if (!node.menus) {
+        console.log(node.menus)
+        return arr.push(node.menuId)
       }
 
-      node.children.forEach((item) => this.getDefKeys(item, arr))
+      node.menus.forEach((item) => this.getDefKeys(item, arr))
     },
 
     // 监听分配权限对话框的关闭事件
@@ -304,8 +312,11 @@ export default {
     async addRights() {
       const keys = [...this.$refs.treeRef.getCheckedKeys(), ...this.$refs.treeRef.getHalfCheckedKeys()]
       const idStr = keys.join(',')
-      const { data: res } = await this.$http.post(`roles/${this.roleId}/rights`, { rids: idStr })
-      if (res.meta.status !== 200) return this.$message.error('分配权限失败！')
+      console.log(setAuth())
+      console.log(idStr)
+      var roleId = this.roleId
+      const { data: res } = await setAuth(roleId, idStr)
+      if (res.code !== 200) return this.$message.error('分配权限失败！')
       this.$message.success('分配权限成功！')
       this.getRoleList()
       this.showSetRightVisible = false

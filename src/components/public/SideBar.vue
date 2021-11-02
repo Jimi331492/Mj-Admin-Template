@@ -3,7 +3,7 @@
  * @Date: 2021-10-15 14:27:30
  * @Description: 
  * @FilePath: \music-web-vue\src\components\public\SideBar.vue
- * @LastEditTime: 2021-11-02 03:26:57
+ * @LastEditTime: 2021-11-02 22:18:41
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -25,7 +25,7 @@
           <!-- 文本 -->
           <span>{{ item.menuName }}</span>
         </template>
-        <el-menu-item :index="'/' + subitem.url" v-for="subitem in item.childMenu" :key="subitem.id" @click="savaNavState('/' + subitem.url)">
+        <el-menu-item :index="'/' + subitem.url" v-for="subitem in item.menus" :key="subitem.id" @click="savaNavState('/' + subitem.url)">
           <!-- 图标 -->
           <i class="el-icon-menu"></i>
           <!-- 文本 -->
