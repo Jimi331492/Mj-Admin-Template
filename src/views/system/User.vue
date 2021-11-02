@@ -3,7 +3,7 @@
  * @Date: 2021-10-24 22:51:08
  * @Description: 
  * @FilePath: \music-web-vue\src\views\system\User.vue
- * @LastEditTime: 2021-11-01 18:17:17
+ * @LastEditTime: 2021-11-02 02:17:24
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -158,7 +158,10 @@
       <!-- 内容主体 -->
       <div>
         <p>当前的用户:{{ userInfo.username }}</p>
-        <p>当前的角色:{{ userInfo.roleName }}</p>
+        <p>
+          当前的角色:
+          <el-tag v-for="item in userInfo.roles" :key="item">{{ item.roleName }}</el-tag>
+        </p>
         <p>
           分配新角色:
           <el-select v-model="selectedRoleId" placeholder="请选择">

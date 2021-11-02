@@ -3,7 +3,7 @@
  * @Date: 2021-10-24 22:51:19
  * @Description: 
  * @FilePath: \music-web-vue\src\views\system\Role.vue
- * @LastEditTime: 2021-10-26 11:20:10
+ * @LastEditTime: 2021-11-02 18:02:58
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -55,12 +55,12 @@
           <template v-slot="scope">
             <!-- 编辑按钮 -->
             <el-tooltip class="item" effect="dark" content="编辑角色" placement="top" :enterable="false">
-              <el-button type="primary" icon="el-icon-edit" @click="showEditRole(scope.row.id)">编辑</el-button>
+              <el-button type="primary" icon="el-icon-edit" @click="showEditRole(scope.row.roleId)">编辑</el-button>
             </el-tooltip>
 
             <!-- 删除按钮 -->
             <el-tooltip class="item" effect="dark" content="删除角色" placement="top" :enterable="false">
-              <el-button type="danger" icon="el-icon-delete" @click="confirmDeleteRole(scope.row.id)">删除</el-button>
+              <el-button type="danger" icon="el-icon-delete" @click="confirmDeleteRole(scope.row.roleId)">删除</el-button>
             </el-tooltip>
 
             <!-- 分配权限按钮 -->
@@ -70,6 +70,10 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <!-- 分页区域 -->
+      <el-pagination @current-change="handleCurrentChange" :page-size="limit" :page-sizes="[4]" layout="total, prev, pager, next, jumper" :total="total">
+      </el-pagination>
     </el-card>
 
     <!-- 这是添加角色的对话框 -->
@@ -79,7 +83,7 @@
         <el-form-item label="角色名称" prop="roleName">
           <el-input v-model="addRoleForm.roleName"></el-input>
         </el-form-item>
-        <el-form-item label="角色描述" prop="roleDesc">
+        <el-form-item label="角色描述" prop="remark">
           <el-input v-model="addRoleForm.remark"></el-input>
         </el-form-item>
       </el-form>
@@ -99,8 +103,8 @@
         <el-form-item label="角色名称" prop="roleName">
           <el-input v-model="editRoleForm.roleName"></el-input>
         </el-form-item>
-        <el-form-item label="角色描述" prop="roleDesc">
-          <el-input v-model="editRoleForm.roleDesc"></el-input>
+        <el-form-item label="角色描述" prop="remark">
+          <el-input v-model="editRoleForm.remark"></el-input>
         </el-form-item>
       </el-form>
       <!-- 底部区域 -->
@@ -128,11 +132,13 @@
 </template>
 
 <script>
-import { queryRole } from '../../api/system/role'
+import { queryRole, addRole, deleteRole, queryRoleById } from '../../api/system/role'
 export default {
   data() {
     return {
-      // 获取角色列表的参数对象
+      // 分页获取角色列表的参数对象
+      limit: 5,
+      total: 0,
       queryInfo: {
         queryKey: '',
         // 当前的页数
@@ -140,6 +146,7 @@ export default {
         // 每页显示多少条数据
         pageSize: 5,
       },
+
       rolelist: [],
       rightlist: [],
       defKeys: [],
@@ -172,22 +179,21 @@ export default {
   },
   methods: {
     async getRoleList() {
-      await queryRole(this.queryInfo).then((res) => {
-        console.log(res)
-        if (res.data.code !== 200) {
-          return this.$message.error('获取角色列表失败！')
-        }
-        this.rolelist = res.data.data.roles
-        this.total = res.data.data.total
-      })
+      const { data: res } = await queryRole(this.queryInfo)
+      console.log(res)
+      if (res.code !== 200) {
+        return this.$message.error('获取角色列表失败！')
+      }
+      this.rolelist = res.data.roles
+      this.total = res.data.total
     },
 
     addRole() {
       this.$refs.addRoleFormRef.validate(async (valid) => {
         if (!valid) return
-        const { data: res } = await this.$http.post('roles', this.addRoleForm)
+        const { data: res } = await addRole(this.addRoleForm)
         console.log(res)
-        if (res.meta.status !== 201) {
+        if (res.code !== 200) {
           this.$message.error('添加角色失败！')
         }
         this.$message.success('添加角色成功')
@@ -195,19 +201,21 @@ export default {
         this.getRoleList()
       })
     },
+
     // 监听添加角色对话框的关闭事件
     addRoleClosed() {
       this.$refs.addRoleFormRef.resetFields()
     },
+
     // 监听修改用户对话框的关闭事件
     editRoleClosed() {
       this.$refs.editRoleFormRef.resetFields()
     },
 
     async showEditRole(id) {
-      const { data: res } = await this.$http.get('roles/' + id)
+      const { data: res } = await queryRoleById(id)
       //   console.log(res)
-      if (res.meta.status !== 200) return this.$message.error('查询角色失败')
+      if (res.code !== 200) return this.$message.error('查询角色失败')
       this.editRoleForm = res.data
       this.editRoleVisible = true
     },
@@ -220,7 +228,7 @@ export default {
         const { data: res } = await this.$http.put('roles/' + this.editRoleForm.roleId, {
           roleId: this.editRoleForm.roleId,
           roleName: this.editRoleForm.roleName,
-          roleDesc: this.editRoleForm.roleDesc,
+          remark: this.editRoleForm.remark,
         })
         // console.log(res)
         if (res.meta.status !== 200) {
@@ -239,8 +247,10 @@ export default {
         type: 'warning',
       }).catch((err) => err)
       if (Result !== 'confirm') return this.$message.info('已经取消删除')
-      const { data: res } = await this.$http.delete('roles/' + id)
-      if (res.meta.status !== 200) return this.$message.error('删除失败!')
+
+      const { data: res } = await deleteRole(id)
+
+      if (res.code !== 200) return this.$message.error('删除失败!')
       this.getRoleList()
       this.$message.success('删除成功')
     },
@@ -300,11 +310,24 @@ export default {
       this.getRoleList()
       this.showSetRightVisible = false
     },
+
+    // 监听 CurrentChange 改变的事件
+    handleCurrentChange(currentPage) {
+      console.log(currentPage)
+      this.queryInfo.currentPage = currentPage
+      this.getRoleList()
+    },
   },
 }
 </script>
 
 <style lang="less" scoped>
+.el-dialog {
+  .el-input {
+    width: 300px;
+  }
+}
+
 .el-tag {
   margin: 7px;
 }

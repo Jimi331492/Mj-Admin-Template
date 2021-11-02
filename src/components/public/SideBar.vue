@@ -3,7 +3,7 @@
  * @Date: 2021-10-15 14:27:30
  * @Description: 
  * @FilePath: \music-web-vue\src\components\public\SideBar.vue
- * @LastEditTime: 2021-11-02 02:12:30
+ * @LastEditTime: 2021-11-02 03:26:57
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -60,6 +60,9 @@ export default {
   },
   created() {
     this.getMenuList()
+  },
+  mounted() {
+    // this.getMenuList()
   },
   computed: {
     isCollapse() {

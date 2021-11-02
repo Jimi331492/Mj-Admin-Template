@@ -3,7 +3,7 @@
  * @Date: 2021-10-15 14:26:59
  * @Description: 
  * @FilePath: \music-web-vue\src\components\public\Header.vue
- * @LastEditTime: 2021-10-30 23:45:22
+ * @LastEditTime: 2021-11-02 03:04:12
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -95,7 +95,9 @@ export default {
       if (command == 'loginout') {
         localStorage.removeItem('token')
         localStorage.removeItem('roleName')
-        window.location.reload()
+
+        // sessionStorage.clear()
+        this.$store.commit('LOGOUT')
         this.$router.push('/login')
       } else if (command == 'userinfo') {
         this.$router.push('/userinfo')

@@ -3,7 +3,7 @@
  * @Date: 2021-10-14 18:32:18
  * @Description:
  * @FilePath: \music-web-vue\src\store\index.js
- * @LastEditTime: 2021-10-31 00:15:18
+ * @LastEditTime: 2021-11-02 03:00:47
  * @LastEditors: Please set LastEditors
  */
 import { createStore } from 'vuex'
@@ -34,6 +34,13 @@ export default createStore({
     // 保存用户基本信息
     setUserBaseInfo(state, baseInfo) {
       state.userBaseInfo = baseInfo
+    },
+
+    LOGOUT(state) {
+      sessionStorage.clear()
+      state.userId = 0
+      state.avatarUrl = ''
+      state.userBaseInfo = {}
     },
   },
   actions: {},
