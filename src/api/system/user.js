@@ -3,7 +3,7 @@
  * @Date: 2021-10-13 13:21:41
  * @Description:
  * @FilePath: \music-web-vue\src\api\system\user.js
- * @LastEditTime: 2021-11-01 01:55:35
+ * @LastEditTime: 2021-11-03 03:47:03
  * @LastEditors: Please set LastEditors
  */
 import request from '../../utils/request'
@@ -94,5 +94,17 @@ export function setRole(data) {
     url: '/user/setRole',
     method: 'post',
     data,
+  })
+}
+
+// 撤销角色
+export function cancelRole(userId, roleId) {
+  if (userId === undefined || roleId === undefined) {
+    return
+  }
+  //传数据写入data，不传则不需要
+  return request({
+    url: `/user/cancelRole?userId=${userId}&roleId=${roleId}`,
+    method: 'post',
   })
 }

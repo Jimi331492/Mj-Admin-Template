@@ -3,7 +3,7 @@
  * @Date: 2021-10-26 11:25:27
  * @Description: 
  * @FilePath: \music-web-vue\src\views\welcome\UserInfo.vue
- * @LastEditTime: 2021-11-02 22:44:42
+ * @LastEditTime: 2021-11-03 04:46:09
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -96,8 +96,7 @@
           </el-table>
         </el-collapse-item>
         <el-collapse-item title="权限信息" name="authoInfo">
-          <!-- 权限信息展示table -->
-          <el-row :class="['bdbottom', index1 === 0 ? 'bdtop' : '', 'rightTags']" v-for="(item1, index1) in role.menus" :key="item1.menuId">
+          <el-row :class="['bdbottom', index1 === 0 ? 'bdtop' : '', 'rightTags']" v-for="(item1, index1) in menus" :key="item1.menuId">
             <!-- 渲染一级权限 -->
             <el-col :span="5">
               <el-tag>{{ item1.menuName }}</el-tag>
@@ -109,12 +108,12 @@
               <el-row :class="[index2 === 0 ? '' : 'bdtop', 'rightTags']" v-for="(item2, index2) in item1.menus" :key="item2.menuId">
                 <el-col :span="4">
                   <el-tag type="success">{{ item2.menuName }}</el-tag>
-                  <i class="el-icon-caret-right"></i>
+                  <!-- <i class="el-icon-caret-right"></i> -->
                 </el-col>
-                <el-col :span="20">
-                  <el-tag v-for="item3 in item2.menus" :key="item3.id" type="warning" closable @close="removeRightById(scope.row, item3.menuId)">
-                    {{ item3.menuName }}
-                  </el-tag>
+                <el-col :span="15">
+                  <!-- <el-tag v-for="item3 in item2.menus" :key="item3.id" type="warning">
+                      {{ item3.menuName }}
+                    </el-tag> -->
                 </el-col>
               </el-row>
             </el-col>
@@ -179,7 +178,7 @@
 
 <script>
 import { updateUserInfo } from '../../api/system/user'
-
+import { getRoleMenus } from '../../api/system/role'
 export default {
   data() {
     // 邮箱验证的规则
@@ -207,6 +206,7 @@ export default {
       deaultArray: ['baseInfo', 'accountInfo'],
       userId: 0, //id
       userInfo: {},
+      menus: [],
       sumbitForm: {
         userId: 0, //用户Id
         username: '', //用户名
@@ -215,6 +215,7 @@ export default {
         mobile: '', //手机号
         description: '', //描述
       },
+
       infoDialogVisible: false,
       otherDialogVisible: false,
       titles: '', //弹窗标题
@@ -251,6 +252,11 @@ export default {
     //   加载时获取用户信息
     async getUserInfo() {
       this.userInfo = this.getUserBaseInfo
+      var roleId = this.userInfo.roles[0].roleId
+      const { data: res } = await getRoleMenus(roleId)
+      if (res.code !== 200) return this.$message.error('操作失败')
+      console.log(res)
+      this.menus = res.data
     },
     format(dateObject) {
       let array = [...dateObject]
@@ -351,5 +357,17 @@ export default {
   .inputDesc {
     width: 300px !important;
   }
+}
+
+.el-tag {
+  margin: 7px;
+}
+
+.bdtop {
+  border-top: 1px solid #eee;
+}
+
+.bdbottom {
+  border-top: 1px solid #eee;
 }
 </style>

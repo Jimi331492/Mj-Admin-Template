@@ -3,7 +3,7 @@
  * @Date: 2021-10-24 22:51:08
  * @Description: 
  * @FilePath: \music-web-vue\src\views\system\User.vue
- * @LastEditTime: 2021-11-02 21:47:53
+ * @LastEditTime: 2021-11-03 04:58:47
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -40,7 +40,7 @@
         <el-table-column prop="mobile" label="电话"> </el-table-column>
         <el-table-column prop="roles" label="角色"
           ><template v-slot="scope">
-            <el-tag v-for="item in scope.row.roles" :key="item">{{ item.roleName }}</el-tag>
+            <el-tag v-for="item in scope.row.roles" :key="item" closable @close="removeRoleById(scope.row.userId, item.roleId)">{{ item.roleName }}</el-tag>
           </template></el-table-column
         >
 
@@ -181,7 +181,7 @@
 </template>
 
 <script>
-import { register, queryUser, deleteUser, lockUser, updateUserInfo, setRole } from '../../api/system/user'
+import { register, queryUser, deleteUser, lockUser, updateUserInfo, setRole, cancelRole } from '../../api/system/user'
 import { selectAllRole } from '../../api/system/role'
 export default {
   data() {
@@ -457,6 +457,28 @@ export default {
       this.getUserList()
       this.$message.success(res.msg)
       this.showSetRoleVisible = false
+    },
+
+    // 根据Id删除对应角色
+    async removeRoleById(userId, roleId) {
+      // console.log(user)
+      // console.log(roleId)
+      // 弹窗提示用户是否要删除
+      const Result = await this.$confirm('此操作将取消用户该角色权限, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }).catch((err) => err)
+      if (Result !== 'confirm') {
+        return this.$message.info('已经取消删除')
+      }
+
+      const { data: res } = await cancelRole(userId, roleId)
+      if (res.code !== 200) return this.$message.error('撤销角色失败!')
+      this.getUserList()
+      this.$message.success('操作成功！')
+      // vue 3.x不行了 也会刷新了
+      // role.menus = res.data
     },
   },
 }

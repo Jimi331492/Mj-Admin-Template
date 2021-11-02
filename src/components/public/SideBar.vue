@@ -3,7 +3,7 @@
  * @Date: 2021-10-15 14:27:30
  * @Description: 
  * @FilePath: \music-web-vue\src\components\public\SideBar.vue
- * @LastEditTime: 2021-11-02 22:18:41
+ * @LastEditTime: 2021-11-03 05:05:06
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -77,7 +77,8 @@ export default {
     async getMenuList() {
       var role = this.getRoleId.roles
       console.log(role)
-      var roleId = role[0].roleId
+      var length = role.length - 1
+      var roleId = role[length].roleId
       const { data: res } = await getRoleMenus(roleId)
 
       // console.log(res)
