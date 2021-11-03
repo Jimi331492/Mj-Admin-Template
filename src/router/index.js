@@ -3,7 +3,7 @@
  * @Date: 2021-10-14 18:32:18
  * @Description:
  * @FilePath: \music-web-vue\src\router\index.js
- * @LastEditTime: 2021-10-26 11:28:16
+ * @LastEditTime: 2021-11-03 05:50:05
  * @LastEditors: Please set LastEditors
  */
 import { createRouter, createWebHashHistory } from 'vue-router'
@@ -15,6 +15,9 @@ const User = () => import(/* webpackChunkName: "login_home_welcome" */ '../views
 const Role = () => import(/* webpackChunkName: "login_home_welcome" */ '../views/system/Role')
 const Menu = () => import(/* webpackChunkName: "login_home_welcome" */ '../views/system/Menu')
 const Log = () => import(/* webpackChunkName: "login_home_welcome" */ '../views/log/Log')
+const Front = () => import(/* webpackChunkName: "login_home_welcome" */ '../views/features/Front')
+const Rear = () => import(/* webpackChunkName: "login_home_welcome" */ '../views/features/Rear')
+const Test = () => import(/* webpackChunkName: "login_home_welcome" */ '../views/features/Test')
 
 const routes = [
   { path: '/', redirect: '/login' },
@@ -30,6 +33,9 @@ const routes = [
       { path: '/system/role', component: Role },
       { path: '/system/menu', component: Menu },
       { path: '/monitor/log', component: Log },
+      { path: '/code/web', component: Front },
+      { path: '/code/java', component: Rear },
+      { path: '/code/test', component: Test },
     ],
   },
 ]
