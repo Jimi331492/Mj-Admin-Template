@@ -3,13 +3,15 @@
  * @Date: 2021-10-13 13:22:12
  * @Description:
  * @FilePath: \music-web-vue\src\utils\request.js
- * @LastEditTime: 2021-10-23 20:05:33
+ * @LastEditTime: 2021-11-04 14:15:01
  * @LastEditors: Please set LastEditors
  */
 import axios from 'axios'
 import Cookies from 'js-cookie'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import 'element-plus/dist/index.css'
+import Nprogress from 'nprogress'
+import 'nprogress/nprogress.css'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded'
@@ -41,6 +43,7 @@ const service = axios.create({
 // request token
 service.interceptors.request.use(
   (config) => {
+    Nprogress.start()
     const tokens = localStorage.getItem('token') || Cookies.get('token')
     if (tokens) {
       config.headers['token'] = tokens
@@ -55,7 +58,8 @@ service.interceptors.request.use(
 // response interceptor 拦截器
 service.interceptors.response.use(
   (response) => {
-    if (response.data.code == 401) {
+    Nprogress.done()
+    if (response.code == 401) {
       ElMessageBox.confirm('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
         confirmButtonText: '重新登录',
         cancelButtonText: '取消',

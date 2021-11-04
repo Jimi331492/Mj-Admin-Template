@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { Login, getUserInfo } from '../api/system/user'
+import { Login, getUserPermsInfo } from '../api/system/user'
 export default {
   data() {
     return {
@@ -83,7 +83,7 @@ export default {
           window.localStorage.setItem('token', this.token)
           this.$store.commit('setUserId', res.data.userId)
 
-          const { data: req } = await getUserInfo(res.data.userId)
+          const { data: req } = await getUserPermsInfo(res.data.userId)
           console.log(req)
           if (req.code !== 200) return this.$message.error(req.msg)
           this.$store.commit('setAvatarUrl', req.data.avatar)

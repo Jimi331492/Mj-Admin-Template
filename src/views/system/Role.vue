@@ -3,7 +3,7 @@
  * @Date: 2021-10-24 22:51:19
  * @Description: 
  * @FilePath: \music-web-vue\src\views\system\Role.vue
- * @LastEditTime: 2021-11-03 02:46:56
+ * @LastEditTime: 2021-11-04 21:54:53
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -38,9 +38,9 @@
                     <!-- <i class="el-icon-caret-right"></i> -->
                   </el-col>
                   <el-col :span="15">
-                    <!-- <el-tag v-for="item3 in item2.menus" :key="item3.id" type="warning">
+                    <el-tag v-for="item3 in item2.menus" :key="item3.id" type="warning" closable @close="removeRightById(scope.row, item3.menuId)">
                       {{ item3.menuName }}
-                    </el-tag> -->
+                    </el-tag>
                   </el-col>
                 </el-row>
               </el-col>
@@ -133,7 +133,7 @@
 
 <script>
 import { selectAllRole, addRole, deleteRole, queryRoleById, setAuth, deleteAuth, updataRoleInfo } from '../../api/system/role'
-import { getMenu } from '../../api/system/menu'
+import { getRight } from '../../api/system/menu'
 export default {
   data() {
     return {
@@ -182,11 +182,13 @@ export default {
     async getRoleList() {
       const { data: res } = await selectAllRole()
       console.log(res)
-      if (res.code !== 200) {
-        return this.$message.error('获取角色列表失败！')
+      if (res.code === 403) {
+        this.$router.replace('/404')
+      } else {
+        if (res.code !== 200) return this.$message.error('获取角色列表失败！')
+        this.rolelist = res.data.roles
+        this.total = res.data.total
       }
-      this.rolelist = res.data.roles
-      this.total = res.data.total
     },
 
     addRole() {
@@ -282,7 +284,7 @@ export default {
       console.log(1)
       console.log(role)
       this.roleId = role.roleId
-      const { data: res } = await getMenu()
+      const { data: res } = await getRight()
       if (res.code !== 200) {
         return this.$message.error('获取权限列表失败')
       }

@@ -3,7 +3,7 @@
  * @Date: 2021-10-13 13:21:41
  * @Description:
  * @FilePath: \music-web-vue\src\api\system\user.js
- * @LastEditTime: 2021-11-03 03:47:03
+ * @LastEditTime: 2021-11-04 18:01:37
  * @LastEditors: Please set LastEditors
  */
 import request from '../../utils/request'
@@ -28,8 +28,18 @@ export function queryUser(data) {
   })
 }
 
-// 登录成功后根据id用户查询用户基本信息
+// 根据id用户查询用户基本信息
 export function getUserInfo(data) {
+  //传数据写入data，不传则不需要
+  return request({
+    url: '/user/findBaseInfo',
+    method: 'post',
+    data,
+  })
+}
+
+// 登录成功后根据id用户查询用户权限信息
+export function getUserPermsInfo(data) {
   //传数据写入data，不传则不需要
   return request({
     url: '/user/findBaseInfo',

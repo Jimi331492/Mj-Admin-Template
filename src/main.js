@@ -3,7 +3,7 @@
  * @Date: 2021-10-14 18:32:18
  * @Description:
  * @FilePath: \music-web-vue\src\main.js
- * @LastEditTime: 2021-10-24 23:09:49
+ * @LastEditTime: 2021-11-04 16:55:24
  * @LastEditors: Please set LastEditors
  */
 import { createApp } from 'vue'

@@ -3,14 +3,14 @@
  * @Date: 2021-10-15 14:26:34
  * @Description: 
  * @FilePath: \music-web-vue\src\views\Layout.vue
- * @LastEditTime: 2021-11-02 03:25:45
+ * @LastEditTime: 2021-11-04 19:40:12
  * @LastEditors: Please set LastEditors
 -->
 <template>
   <v-header></v-header>
   <vSiderBar></vSiderBar>
   <div class="content-box" :class="isCollapse ? '' : 'content-collapse'">
-    <!-- <v-tags></v-tags> -->
+    <v-tags></v-tags>
     <div class="content">
       <router-view></router-view>
     </div>
@@ -21,6 +21,7 @@
 // import { getUserInfo } from '../api/system/user'
 import vHeader from '../components/public/Header.vue'
 import vSiderBar from '../components/public/SideBar.vue'
+import vTags from '../components/public/Tags.vue'
 export default {
   data() {
     return {
@@ -30,6 +31,7 @@ export default {
   components: {
     vHeader,
     vSiderBar,
+    vTags,
   },
   created() {
     // this.getUserBaseInfo()

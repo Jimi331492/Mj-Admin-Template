@@ -3,7 +3,7 @@
  * @Date: 2021-10-15 14:27:30
  * @Description: 
  * @FilePath: \music-web-vue\src\components\public\SideBar.vue
- * @LastEditTime: 2021-11-03 05:05:06
+ * @LastEditTime: 2021-11-04 19:32:10
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -19,15 +19,20 @@
       unique-opened
       router
     >
-      <el-sub-menu :index="item.menuId + ''" v-for="(item, index) in menuList" :key="item.menuId">
+      <!-- <el-menu-item
+        ><i class="el-icon-s-home"></i>
+       
+        <span>首页</span></el-menu-item
+      > -->
+      <el-sub-menu v-show="item.menus.length !== null" :index="item.menuId + ''" v-for="(item, index) in menuList" :key="index">
         <template #title>
-          <i :class="iconsObj[index]"></i>
+          <i :class="item.icon"></i>
           <!-- 文本 -->
           <span>{{ item.menuName }}</span>
         </template>
         <el-menu-item :index="'/' + subitem.url" v-for="subitem in item.menus" :key="subitem.id" @click="savaNavState('/' + subitem.url)">
           <!-- 图标 -->
-          <i class="el-icon-menu"></i>
+          <i :class="item.icon"></i>
           <!-- 文本 -->
           <span>{{ subitem.menuName }}</span>
         </el-menu-item>
@@ -55,7 +60,6 @@ export default {
         roleId: '',
       },
       activePath: '',
-      iconsObj: ['el-icon-user', 'el-icon-key', 'el-icon-shopping-cart-1', 'el-icon-s-order', 'el-icon-document-copy'],
     }
   },
   created() {

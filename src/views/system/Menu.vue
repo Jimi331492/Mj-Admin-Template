@@ -3,7 +3,7 @@
  * @Date: 2021-10-24 22:51:29
  * @Description: 
  * @FilePath: \music-web-vue\src\views\system\Menu.vue
- * @LastEditTime: 2021-11-02 22:41:36
+ * @LastEditTime: 2021-11-04 04:29:36
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -18,10 +18,16 @@
     <!-- 卡片内容区 -->
     <el-card>
       <!-- 列表区域 -->
-      <el-table :data="rightlist" border stripe default-expand-all row-key="menuId" :tree-props="{ children: 'menus' }">
+      <el-table :data="rightlist" border stripe default-expand-all row-key="menuId" :tree-props="{ children: 'menus' }" :indent="32">
         <el-table-column type="index"></el-table-column>
         <el-table-column prop="menuName" label="权限名称" sortable></el-table-column>
         <el-table-column prop="url" label="路径"></el-table-column>
+        <el-table-column prop="type" label="类型">
+          <template v-slot="scope">
+            <el-tag v-if="scope.row.type === '0'">菜单</el-tag>
+            <el-tag type="danger" v-else-if="scope.row.type === '1'">按钮</el-tag>
+          </template>
+        </el-table-column>
 
         <el-table-column label="权限等级">
           <template v-slot="scope">
@@ -36,7 +42,7 @@
 </template>
 
 <script>
-import { getMenu } from '../../api/system/menu'
+import { getRight } from '../../api/system/menu'
 export default {
   data() {
     return {
@@ -48,11 +54,12 @@ export default {
   },
   methods: {
     async getRightList() {
-      const { data: res } = await getMenu()
+      const { data: res } = await getRight()
       if (res.code !== 200) {
         return this.$message.error('获取权限列表失败!')
       }
       this.rightlist = res.data
+      console.log(this.rightlist)
     },
   },
 }

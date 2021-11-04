@@ -3,7 +3,7 @@
  * @Date: 2021-10-14 18:32:18
  * @Description:
  * @FilePath: \music-web-vue\src\store\index.js
- * @LastEditTime: 2021-11-02 03:00:47
+ * @LastEditTime: 2021-11-04 19:42:52
  * @LastEditors: Please set LastEditors
  */
 import { createStore } from 'vuex'
@@ -14,11 +14,16 @@ export default createStore({
     userId: 0,
     avatarUrl: '',
     userBaseInfo: {},
+    tagList: [],
   },
   mutations: {
     // 保存是否展开侧边栏
     setCollapse(state, collapse) {
       state.collapse = collapse
+    },
+
+    setTagList(state, tagList) {
+      state.tagList = tagList
     },
 
     // 保存用户ID
