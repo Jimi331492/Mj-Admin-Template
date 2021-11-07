@@ -3,19 +3,18 @@
  * @Date: 2021-10-25 17:25:07
  * @Description:
  * @FilePath: \music-web-vue\src\api\system\role.js
- * @LastEditTime: 2021-11-03 02:29:52
+ * @LastEditTime: 2021-11-05 01:51:29
  * @LastEditors: Please set LastEditors
  */
 
 import request from '../../utils/request'
 
 // 分页查询角色
-export function selectAllRole(data) {
+export function selectAllRole() {
   //传数据写入data，不传则不需要
   return request({
-    url: '/role/selectAll',
-    method: 'post',
-    data,
+    url: '/role/all',
+    method: 'get',
   })
 }
 
@@ -23,8 +22,8 @@ export function selectAllRole(data) {
 export function queryRoleById(data) {
   //传数据写入data，不传则不需要
   return request({
-    method: 'post',
-    url: '/role/select',
+    method: 'get',
+    url: `/role/${data}`,
     data,
   })
 }
@@ -52,8 +51,8 @@ export function addRole(data) {
 export function deleteRole(data) {
   //传数据写入data，不传则不需要
   return request({
-    url: `/role/delete`,
-    method: 'post',
+    url: `/role/${data}`,
+    method: 'delete',
     data,
   })
 }
@@ -63,26 +62,30 @@ export function updataRoleInfo(data) {
   //传数据写入data，不传则不需要
   return request({
     url: `/role/update`,
-    method: 'post',
+    method: 'put',
     data,
   })
 }
 
 // 给角色授权
-export function setAuth(roleId, menuIdStr) {
-  if (roleId === undefined || menuIdStr === undefined) return
+export function setAuth(data) {
+  if (data.roleId === undefined || data.idStr === undefined) return
   //传数据写入data，不传则不需要
   return request({
-    url: `/role/setAuth?roleId=${roleId}&menuIdStr=${menuIdStr}`,
+    url: `/role/setAuth`,
     method: 'post',
+    data,
   })
 }
 
 // 取消角色授权
 export function deleteAuth(roleId, menuId) {
+  if (menuId === undefined || roleId === undefined) {
+    return
+  }
   //传数据写入data，不传则不需要
   return request({
-    url: `/role/deleteAuth?roleId=${roleId}&menuId=${menuId}`,
-    method: 'post',
+    url: `/role/${roleId}/perm/${menuId}`,
+    method: 'delete',
   })
 }

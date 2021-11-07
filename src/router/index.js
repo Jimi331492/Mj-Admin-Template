@@ -3,7 +3,7 @@
  * @Date: 2021-10-14 18:32:18
  * @Description:
  * @FilePath: \music-web-vue\src\router\index.js
- * @LastEditTime: 2021-11-04 19:46:46
+ * @LastEditTime: 2021-11-08 06:08:28
  * @LastEditors: Please set LastEditors
  */
 import { createRouter, createWebHashHistory } from 'vue-router'
@@ -15,13 +15,13 @@ const UserInfo = () => import(/* webpackChunkName: "public" */ '../views/welcome
 
 const User = () => import(/* webpackChunkName: "admin" */ '../views/system/User')
 const Role = () => import(/* webpackChunkName: "admin" */ '../views/system/Role')
-const Menu = () => import(/* webpackChunkName: menu" */ '../views/system/Menu')
+const Menu = () => import(/* webpackChunkName: "menu" */ '../views/system/Menu')
 const Log = () => import(/* webpackChunkName: "watch" */ '../views/log/Log')
 const Front = () => import(/* webpackChunkName: "function" */ '../views/features/Front')
 const Rear = () => import(/* webpackChunkName: "function" */ '../views/features/Rear')
 const Test = () => import(/* webpackChunkName: "funciton" */ '../views/features/Test')
 
-const constRoutes = [
+export const constRoutes = [
   { path: '/', redirect: '/login' },
   { path: '/login', component: Login },
   {
@@ -103,34 +103,16 @@ const constRoutes = [
   },
 ]
 
-export const asyncRouetes = [
-  {
-    path: '/finance',
-    component: () => import('../views/Finance'),
-    meta: {
-      title: '财务信息',
-      roles: ['superadmin'],
-    },
-  },
-  {
-    path: '/staffs',
-    component: () => import('../views/Staffs'),
-    meta: {
-      title: '员工信息',
-      roles: ['superadmin'],
-    },
-  },
-]
+export const AsyncRouter = []
 
-var allPaths = []
-asyncRouetes.forEach((option) => {
-  allPaths.push(option.path)
-})
+const readyNewRouter = () =>
+  new createRouter({
+    scrollBehavior: () => ({ top: 0 }),
+    history: createWebHashHistory(),
+    routes: constRoutes,
+  })
 
-const router = createRouter({
-  history: createWebHashHistory(),
-  routes: constRoutes,
-})
+const router = readyNewRouter()
 
 router.beforeEach((to, form, next) => {
   // to 将要访问的路径
@@ -147,8 +129,8 @@ router.beforeEach((to, form, next) => {
 })
 
 export function resetRouter() {
-  const newRouter = createRouter()
-  router.matcher = newRouter.matcher // reset router
+  const newRouter = readyNewRouter()
+  router.resolve = newRouter.resolve // reset router
 }
 
 export default router

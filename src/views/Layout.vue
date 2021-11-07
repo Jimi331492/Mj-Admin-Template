@@ -3,7 +3,7 @@
  * @Date: 2021-10-15 14:26:34
  * @Description: 
  * @FilePath: \music-web-vue\src\views\Layout.vue
- * @LastEditTime: 2021-11-04 19:40:12
+ * @LastEditTime: 2021-11-08 05:57:05
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -39,12 +39,11 @@ export default {
   mounted() {},
   computed: {
     isCollapse() {
-      console.log(this.$store.state.collapse)
-      return this.$store.state.collapse
+      return this.$store.getters.collapse
     },
-    isUserId() {
-      return this.$store.state.userId
-    },
+    // isUserId() {
+    //   return this.$store.state.userId
+    // },
   },
   methods: {
     // async getUserBaseInfo() {

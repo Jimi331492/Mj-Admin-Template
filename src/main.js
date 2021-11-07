@@ -3,7 +3,7 @@
  * @Date: 2021-10-14 18:32:18
  * @Description:
  * @FilePath: \music-web-vue\src\main.js
- * @LastEditTime: 2021-11-04 16:55:24
+ * @LastEditTime: 2021-11-05 08:15:12
  * @LastEditors: Please set LastEditors
  */
 import { createApp } from 'vue'
@@ -15,8 +15,9 @@ import 'element-plus/dist/index.css'
 import locale from 'element-plus/lib/locale/lang/zh-cn'
 import './assets/css/global.css'
 import axios from 'axios'
+// import { has } from './utils/has'
 
 const app = createApp(App)
 app.config.globalProperties.$http = axios
-
+// app.use(has)
 app.use(store).use(router).use(ElementPlus, { locale }).mount('#app')

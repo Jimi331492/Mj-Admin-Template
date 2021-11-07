@@ -3,13 +3,13 @@
  * @Date: 2021-10-15 14:26:59
  * @Description: 
  * @FilePath: \music-web-vue\src\components\public\Header.vue
- * @LastEditTime: 2021-11-02 03:04:12
+ * @LastEditTime: 2021-11-08 06:06:37
  * @LastEditors: Please set LastEditors
 -->
 <template>
   <div class="header">
     <!-- 折叠按钮 -->
-    <div class="collapse-btn" @click="collapseChage">
+    <div class="collapse-btn" @click="collapseChange">
       <i class="el-icon-menu"></i>
     </div>
     <div class="logo">通用权限管理系统</div>
@@ -23,7 +23,7 @@
         </div>
         <!-- 消息中心 -->
         <!-- 用户头像 -->
-        <div class="user-avator"><img :src="avatarUrl" /></div>
+        <div class="user-avator"><img :src="oldAvatarUrl" /></div>
         <!-- 用户名下拉菜单 -->
         <el-dropdown class="user-name" trigger="click" @command="handleCommand">
           <span class="el-dropdown-link"> {{ name }}<i class="el-icon-caret-bottom"></i> </span>
@@ -41,18 +41,18 @@
   </div>
   <!-- 弹窗区域 -->
   <el-dialog :title="titles" v-model="dialogVisible" width="50%" @close="dialogClosed">
-    <el-form ref="sumbitFormRef" label-width="100px">
-      <el-form-item v-if="titles == '设置头像'" label="图片地址:" prop="avatar"
-        ><el-input class="long" v-model="avatarUrl" placeholder="请输入图片的网络地址" @change="avatarChange"> </el-input>
+    <el-form ref="formRef" :model="form" label-width="100px" :rules="rules">
+      <el-form-item v-if="titles == '设置头像'" label="图片地址:" prop="newAvatarUrl"
+        ><el-input class="long" v-model="form.newAvatarUrl" placeholder="请输入图片的网络地址" @change="avatarChange"> </el-input>
       </el-form-item>
-      <el-form-item v-if="titles == '修改密码'" label="旧密码:" prop="oldPwd"
-        ><el-input v-model="oldPwd" placeholder="请输入旧密码" @change="oldPwdChange"> </el-input>
+      <el-form-item v-if="titles == '修改密码'" label="旧密码:" prop="oldPwd">
+        <el-input v-model="form.oldPwd" placeholder="请输入旧密码" show-password @change="oldPwdChange" />
       </el-form-item>
       <el-form-item v-if="titles == '修改密码'" label="新密码:" prop="newPwd"
-        ><el-input v-model="newPwd" placeholder="请输入新密码" @change="newPwdChange"> </el-input>
+        ><el-input v-model="form.newPwd" placeholder="请输入新密码" @change="newPwdChange" show-password />
       </el-form-item>
       <el-form-item v-if="titles == '修改密码'" label="确认密码:" prop="confirePwd"
-        ><el-input v-model="confirePwd" placeholder="请确认密码" @change="confirePwdChange"> </el-input>
+        ><el-input v-model="form.confirePwd" placeholder="请确认密码" @change="confirePwdChange" show-password />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -65,29 +65,76 @@
 </template>
 
 <script>
+import { setAvatar, updatePwd } from '../../api/system/user'
 export default {
   data() {
+    var checkUrl = (rule, value, callback) => {
+      const checkImgNetworkUrl = /^(https?:[^:<>"]*\/)([^:<>"]*)(\.((png!thumbnail)|(png)|(jpg)|(webp)))/
+      if (!value) {
+        callback(new Error('请输入头像地址'))
+      } else if (!checkImgNetworkUrl.test(value)) {
+        callback(new Error('请输入合法的头像网络路径，只支持png,jpg,webp'))
+      } else {
+        callback()
+      }
+    }
+    var checkNewPwd = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请输入新密码'))
+      } else if (value.toString().length < 6 || value.toString().length > 18) {
+        callback(new Error('密码长度为6 - 18个字符'))
+      } else {
+        callback()
+      }
+    }
+    var checkConfirmPwd = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.form.newPwd) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
+
     return {
-      collapse: false,
+      collapse: true,
       fullscreen: false,
       titles: '',
       dialogVisible: false,
-      name: 'undefined',
       message: 2,
+      oldAvatarUrl: '',
+      form: {
+        userId: 0,
+        newAvatarUrl: '',
+        oldPwd: '',
+        newPwd: '',
+        confirePwd: '',
+      },
+      rules: {
+        newAvatarUrl: [{ validator: checkUrl, trigger: 'blur' }],
+        oldPwd: [{ required: true, message: '请输入旧密码', trigger: 'blur' }],
+        newPwd: [{ validator: checkNewPwd, trigger: 'blur' }],
+        confirePwd: [{ validator: checkConfirmPwd, trigger: 'blur' }],
+      },
     }
   },
-  created() {},
+  created() {
+    this.oldAvatarUrl = this.getAvatarUrl
+    this.form.userId = this.isUserId
+  },
   computed: {
-    avatarUrl() {
-      return this.$store.state.avatarUrl
+    getAvatarUrl() {
+      return this.$store.getters.userBaseInfo.avatar
+    },
+    isUserId() {
+      return this.$store.getters.userId
     },
   },
   mounted() {
-    if (document.body.clientWidth < 1500) {
-      this.collapseChage()
-    }
-    // 获取姓名
-    this.name = this.$store.getters.roleName
+    // if (document.body.clientWidth < 1500) {
+    //   this.collapseChange()
+    // }
   },
   methods: {
     // 用户名下拉菜单选择事件
@@ -103,6 +150,7 @@ export default {
         this.$router.push('/userinfo')
       } else if (command == 'setAvatar') {
         this.titles = '设置头像'
+        this.form.newAvatarUrl = this.getAvatarUrl
         this.dialogVisible = true
       } else if (command == 'updatePwd') {
         this.titles = '修改密码'
@@ -110,11 +158,13 @@ export default {
       }
     },
     // 侧边栏折叠
-    collapseChage() {
+    collapseChange() {
       this.collapse = !this.collapse
-      console.log(this.collapse)
-      this.$store.commit('setCollapse', this.collapse)
-      //   bus.$emit('collapse', this.collapse)
+      this.$store.dispatch('changeSideBar', this.collapse)
+      // this.collapse = !this.collapse
+      // console.log(this.collapse)
+      // this.$store.commit('setCollapse', this.collapse)
+      // //   bus.$emit('collapse', this.collapse)
     },
     // 全屏事件
     handleFullScreen() {
@@ -143,8 +193,44 @@ export default {
       }
       this.fullscreen = !this.fullscreen
     },
+
+    sumbitForm() {
+      this.$refs.formRef.validate(async (valid) => {
+        // console.log(valid)
+        if (!valid) return
+
+        if (this.titles === '设置头像') {
+          if (this.form.newAvatarUrl === '') {
+            return this.$message.error('头像路径不能为空！')
+          }
+          let userId = this.isUserId
+          let url = this.form.newAvatarUrl
+          const { data: res } = await setAvatar(userId, url)
+          if (res.code !== 200) return this.$message.error('操作失败')
+          this.oldAvatarUrl = url
+          this.$store.commit('setAvatarUrl', url)
+          this.$message.success('操作成功！')
+          this.dialogVisible = false
+        } else {
+          if (this.titles === '修改密码') {
+            const { data: res } = await updatePwd(this.form)
+            console.log(res)
+            if (res.code !== 200) return this.$message.error(res.msg)
+            this.$message.success('操作成功！请重新登录！')
+            localStorage.removeItem('token')
+            localStorage.removeItem('roleName')
+
+            // sessionStorage.clear()
+            this.$store.commit('LOGOUT')
+            this.$router.push('/login')
+          }
+        }
+      })
+    },
     // 弹窗关闭事件
-    dialogClosed() {},
+    dialogClosed() {
+      this.$refs.formRef.resetFields()
+    },
   },
 }
 </script>

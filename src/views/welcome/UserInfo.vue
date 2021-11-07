@@ -3,7 +3,7 @@
  * @Date: 2021-10-26 11:25:27
  * @Description: 
  * @FilePath: \music-web-vue\src\views\welcome\UserInfo.vue
- * @LastEditTime: 2021-11-03 04:46:09
+ * @LastEditTime: 2021-11-08 06:05:51
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -80,8 +80,12 @@
               <div v-if="userInfo.status === 0"><el-tag type="danger">锁定</el-tag></div>
               <div v-else><el-tag type="success">有效</el-tag></div>
             </el-form-item>
-            <el-form-item label="注册日期:" prop="createTime">{{ this.format(this.userInfo.createTime) }} </el-form-item>
-            <el-form-item label="最近修改日期:" prop="modifyTime">{{ this.format(this.userInfo.modifyTime) }} </el-form-item>
+            <el-form-item label="注册日期:" prop="createTime">
+              {{ this.format(this.userInfo.createTime) }}
+            </el-form-item>
+            <el-form-item label="最近修改日期:" prop="modifyTime">
+              {{ this.format(this.userInfo.modifyTime) }}
+            </el-form-item>
             <el-form-item label="最近登录日期:" prop="lastLoginTime">
               {{ this.format(this.userInfo.lastLoginTime) }}
             </el-form-item>
@@ -89,11 +93,14 @@
         </el-collapse-item>
         <el-collapse-item title="角色信息" name="roleInfo">
           <!-- 角色信息展示table -->
-          <el-table :data="userInfo.roles">
-            <el-table-column type="index"></el-table-column>
-            <el-table-column prop="roleName" label="角色名"></el-table-column>
-            <el-table-column prop="remark" label="描述"></el-table-column>
-          </el-table>
+          <el-form style="display: inline-block">
+            <el-form-item label="角色名:" prop="roleName">
+              <el-tag type="primary">{{ roleInfo.roleName }}</el-tag>
+            </el-form-item>
+            <el-form-item label="描述:" prop="remark">
+              {{ roleInfo.remark }}
+            </el-form-item>
+          </el-form>
         </el-collapse-item>
         <el-collapse-item title="权限信息" name="authoInfo">
           <el-row :class="['bdbottom', index1 === 0 ? 'bdtop' : '', 'rightTags']" v-for="(item1, index1) in menus" :key="item1.menuId">
@@ -108,12 +115,12 @@
               <el-row :class="[index2 === 0 ? '' : 'bdtop', 'rightTags']" v-for="(item2, index2) in item1.menus" :key="item2.menuId">
                 <el-col :span="4">
                   <el-tag type="success">{{ item2.menuName }}</el-tag>
-                  <!-- <i class="el-icon-caret-right"></i> -->
+                  <i class="el-icon-caret-right"></i>
                 </el-col>
                 <el-col :span="15">
-                  <!-- <el-tag v-for="item3 in item2.menus" :key="item3.id" type="warning">
-                      {{ item3.menuName }}
-                    </el-tag> -->
+                  <el-tag v-for="item3 in item2.menus" :key="item3.id" type="warning">
+                    {{ item3.menuName }}
+                  </el-tag>
                 </el-col>
               </el-row>
             </el-col>
@@ -177,8 +184,8 @@
 </template>
 
 <script>
-import { updateUserInfo } from '../../api/system/user'
-import { getRoleMenus } from '../../api/system/role'
+import { updateUserInfo, getUserPermsInfo } from '../../api/system/user'
+
 export default {
   data() {
     // 邮箱验证的规则
@@ -206,6 +213,7 @@ export default {
       deaultArray: ['baseInfo', 'accountInfo'],
       userId: 0, //id
       userInfo: {},
+      roleInfo: {},
       menus: [],
       sumbitForm: {
         userId: 0, //用户Id
@@ -245,21 +253,27 @@ export default {
   },
   computed: {
     getUserBaseInfo() {
-      return this.$store.state.userBaseInfo
+      return this.$store.getters.userBaseInfo
+    },
+    isUserId() {
+      return this.$store.getters.userId
     },
   },
   methods: {
     //   加载时获取用户信息
     async getUserInfo() {
-      this.userInfo = this.getUserBaseInfo
-      var roleId = this.userInfo.roles[0].roleId
-      const { data: res } = await getRoleMenus(roleId)
-      if (res.code !== 200) return this.$message.error('操作失败')
+      const { data: res } = await getUserPermsInfo(this.isUserId)
       console.log(res)
-      this.menus = res.data
+      if (res.code !== 200) return this.$message.error(res.msg)
+
+      this.userInfo = res.data.userBaseInfo
+      this.roleInfo = res.data.roleInfo
+      this.menus = res.data.menusInfo
     },
     format(dateObject) {
-      let array = [...dateObject]
+      let obj = dateObject + ''
+      let array = obj.split(',')
+
       let YY = array[0]
       let MM = array[1]
       let DD = array[2]
@@ -304,12 +318,12 @@ export default {
         this.sumbitForm.userId = this.userInfo.userId
         console.log(this.sumbitForm)
         // 调用接口
-        await updateUserInfo(this.sumbitForm).then((res) => {
-          console.log(res)
-          if (res.data.code !== 200) this.$message.error('操作失败！')
-          this.$message.success('操作成功！')
-          this.infoDialogVisible = false
-        })
+        const { data: res } = await updateUserInfo(this.sumbitForm)
+        console.log(res)
+        if (res.code !== 200) this.$message.error('操作失败！')
+        this.getUserInfo()
+        this.$message.success('操作成功！')
+        this.infoDialogVisible = false
       })
     },
 

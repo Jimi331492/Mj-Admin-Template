@@ -3,7 +3,7 @@
  * @Date: 2021-10-13 13:21:41
  * @Description:
  * @FilePath: \music-web-vue\src\api\system\user.js
- * @LastEditTime: 2021-11-04 18:01:37
+ * @LastEditTime: 2021-11-05 04:51:06
  * @LastEditors: Please set LastEditors
  */
 import request from '../../utils/request'
@@ -28,33 +28,12 @@ export function queryUser(data) {
   })
 }
 
-// 根据id用户查询用户基本信息
-export function getUserInfo(data) {
-  //传数据写入data，不传则不需要
-  return request({
-    url: '/user/findBaseInfo',
-    method: 'post',
-    data,
-  })
-}
-
 // 登录成功后根据id用户查询用户权限信息
 export function getUserPermsInfo(data) {
   //传数据写入data，不传则不需要
   return request({
-    url: '/user/findBaseInfo',
-    method: 'post',
-    data,
-  })
-}
-
-// 查找单个用户
-export function getOnlyUser(data) {
-  //传数据写入data，不传则不需要
-  return request({
-    url: '/user/select',
-    method: 'post',
-    data,
+    url: `/user/baseInfo/${data}`,
+    method: 'get',
   })
 }
 
@@ -62,7 +41,26 @@ export function getOnlyUser(data) {
 export function updateUserInfo(data) {
   //传数据写入data，不传则不需要
   return request({
-    url: '/user/updateBase',
+    url: '/user/baseInfo',
+    method: 'put',
+    data,
+  })
+}
+
+// 修改用户头像
+export function setAvatar(userId, url) {
+  //传数据写入data，不传则不需要
+  return request({
+    url: `/user/${userId}/avatar?avatarUrl=${url}`,
+    method: 'put',
+  })
+}
+
+// 修改用户密码
+export function updatePwd(data) {
+  //传数据写入data，不传则不需要
+  return request({
+    url: '/user/updatePassword',
     method: 'post',
     data,
   })
@@ -82,8 +80,8 @@ export function register(data) {
 export function deleteUser(data) {
   //传数据写入data，不传则不需要
   return request({
-    url: '/user/delete',
-    method: 'post',
+    url: `/user/delete/${data}`,
+    method: 'delete',
     data,
   })
 }
@@ -93,7 +91,7 @@ export function lockUser(data) {
   //传数据写入data，不传则不需要
   return request({
     url: '/user/lockUser',
-    method: 'post',
+    method: 'put',
     data,
   })
 }
@@ -114,7 +112,7 @@ export function cancelRole(userId, roleId) {
   }
   //传数据写入data，不传则不需要
   return request({
-    url: `/user/cancelRole?userId=${userId}&roleId=${roleId}`,
-    method: 'post',
+    url: `/user/${userId}/role/${roleId}`,
+    method: 'delete',
   })
 }

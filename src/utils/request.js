@@ -3,10 +3,11 @@
  * @Date: 2021-10-13 13:22:12
  * @Description:
  * @FilePath: \music-web-vue\src\utils\request.js
- * @LastEditTime: 2021-11-04 14:15:01
+ * @LastEditTime: 2021-11-08 05:48:58
  * @LastEditors: Please set LastEditors
  */
 import axios from 'axios'
+import store from '../store'
 import Cookies from 'js-cookie'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import 'element-plus/dist/index.css'
@@ -22,7 +23,9 @@ axios.defaults.baseURL = 'http://127.0.0.1:8888' //配置接口地址
 // 请求携带token
 axios.interceptors.request.use(
   (config) => {
-    const tokens = sessionStorage.getItem('token') || Cookies.get('token')
+    // const tokens = sessionStorage.getItem('token') || Cookies.get('token')
+    const tokens = store.getters.token
+    console.log('tokens', tokens)
     if (tokens) {
       config.headers.token = tokens // 让每个请求携带token--['Authorization']为自定义key 请根据实际情况自行修改
     }

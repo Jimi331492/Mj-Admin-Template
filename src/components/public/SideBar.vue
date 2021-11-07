@@ -3,7 +3,7 @@
  * @Date: 2021-10-15 14:27:30
  * @Description: 
  * @FilePath: \music-web-vue\src\components\public\SideBar.vue
- * @LastEditTime: 2021-11-04 19:32:10
+ * @LastEditTime: 2021-11-08 02:44:16
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -32,7 +32,7 @@
         </template>
         <el-menu-item :index="'/' + subitem.url" v-for="subitem in item.menus" :key="subitem.id" @click="savaNavState('/' + subitem.url)">
           <!-- 图标 -->
-          <i :class="item.icon"></i>
+          <i :class="subitem.icon"></i>
           <!-- 文本 -->
           <span>{{ subitem.menuName }}</span>
         </el-menu-item>
@@ -44,7 +44,7 @@
 
 <script>
 // import { getMenu } from '../../api/home/home'
-import { getRoleMenus } from '../../api/system/role'
+// import { getRoleMenus } from '../../api/system/role'
 export default {
   data() {
     return {
@@ -72,22 +72,35 @@ export default {
     isCollapse() {
       return this.$store.state.collapse
     },
-    getRoleId() {
-      return this.$store.state.userBaseInfo
+    isMenusInfo() {
+      return this.$store.state.menusInfo
     },
   },
   methods: {
+    // getPerms(data) {
+    //   data.forEach((item, i) => {
+    //     console.log(item)
+    //     if (item.menus) {
+    //       // 调用递归函数
+    //       this.getPerms(item.menus)
+    //     }
+    //     if (item.menus) {
+    //       if (data.perms) {
+    //         console.log(data.perms)
+    //         let obj = {
+    //           menuId: data[i].menuId,
+    //           perms: data[i].perms,
+    //         }
+    //         console.log(obj)
+    //         this.$store.dispatch('SET_BUTTONS', obj)
+    //       }
+    //     }
+    //   })
+    // },
+
     // 获取菜单列表
     async getMenuList() {
-      var role = this.getRoleId.roles
-      console.log(role)
-      var length = role.length - 1
-      var roleId = role[length].roleId
-      const { data: res } = await getRoleMenus(roleId)
-
-      // console.log(res)
-      if (res.code !== 200) return this.$message.error('获取菜单列表失败！')
-      this.menuList = res.data
+      this.menuList = this.isMenusInfo
     },
     btn(e) {
       console.log(e)

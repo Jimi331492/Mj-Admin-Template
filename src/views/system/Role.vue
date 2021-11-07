@@ -3,7 +3,7 @@
  * @Date: 2021-10-24 22:51:19
  * @Description: 
  * @FilePath: \music-web-vue\src\views\system\Role.vue
- * @LastEditTime: 2021-11-04 21:54:53
+ * @LastEditTime: 2021-11-05 01:28:49
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -314,10 +314,14 @@ export default {
     async addRights() {
       const keys = [...this.$refs.treeRef.getCheckedKeys(), ...this.$refs.treeRef.getHalfCheckedKeys()]
       const idStr = keys.join(',')
-      console.log(setAuth())
+
       console.log(idStr)
-      var roleId = this.roleId
-      const { data: res } = await setAuth(roleId, idStr)
+
+      var data = {
+        roleId: this.roleId,
+        idStr: idStr,
+      }
+      const { data: res } = await setAuth(data)
       if (res.code !== 200) return this.$message.error('分配权限失败！')
       this.$message.success('分配权限成功！')
       this.getRoleList()

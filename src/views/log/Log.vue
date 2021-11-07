@@ -3,7 +3,7 @@
  * @Date: 2021-10-24 22:52:12
  * @Description: 
  * @FilePath: \music-web-vue\src\views\log\Log.vue
- * @LastEditTime: 2021-11-03 06:56:16
+ * @LastEditTime: 2021-11-05 06:31:14
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -22,7 +22,7 @@
         <el-col :span="7">
           <el-input placeholder="请输入用户名" v-model="queryInfo.queryKey" clearable @clear="getLogList">
             <template #append>
-              <el-button icon="el-icon-search" @click="getUserList"></el-button>
+              <el-button icon="el-icon-search" @click="getLogList"></el-button>
             </template>
           </el-input>
         </el-col>
@@ -71,11 +71,13 @@ export default {
   methods: {
     async getLogList() {
       const { data: res } = await queryLog(this.queryInfo)
-      if (res.code !== 200) {
-        return this.$message.error('获取日志列表失败！')
+      if (res.code === 403) {
+        this.$router.replace('/404')
+      } else {
+        if (res.code !== 200) return this.$message.error('获取日志列表失败！')
+        this.logList = res.data.logList
+        this.total = res.data.total
       }
-      this.logList = res.data.logList
-      this.total = res.data.total
     },
     // 监听 CurrentChange 改变的事件
     handleCurrentChange(currentPage) {

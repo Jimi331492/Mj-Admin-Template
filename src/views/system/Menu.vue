@@ -3,7 +3,7 @@
  * @Date: 2021-10-24 22:51:29
  * @Description: 
  * @FilePath: \music-web-vue\src\views\system\Menu.vue
- * @LastEditTime: 2021-11-04 04:29:36
+ * @LastEditTime: 2021-11-05 07:14:55
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -33,6 +33,7 @@
           <template v-slot="scope">
             <el-tag v-if="scope.row.parentId === 0">一级</el-tag>
             <!-- <el-tag type="success" v-else-if="scope.row.level === '1'">二级</el-tag> -->
+            <el-tag type="danger" v-else-if="scope.row.type === '1'">三级</el-tag>
             <el-tag type="success" v-else>二级</el-tag>
           </template>
         </el-table-column>
@@ -45,6 +46,16 @@
 import { getRight } from '../../api/system/menu'
 export default {
   data() {
+    //  递归函数
+    // const Fn = (data) => {
+    //   data.forEach((item, i) => {
+    //     if (item.children) {
+    //       // 调用递归函数
+    //       Fn(item.children)
+    //     }
+    //     data[i].key = data[i].value
+    //   })
+    // }
     return {
       rightlist: [],
     }
@@ -59,6 +70,7 @@ export default {
         return this.$message.error('获取权限列表失败!')
       }
       this.rightlist = res.data
+
       console.log(this.rightlist)
     },
   },
