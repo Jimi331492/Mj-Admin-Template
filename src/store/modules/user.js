@@ -3,12 +3,12 @@
  * @Date: 2021-11-08 01:46:20
  * @Description:
  * @FilePath: \music-web-vue\src\store\modules\user.js
- * @LastEditTime: 2021-11-08 20:47:03
+ * @LastEditTime: 2021-11-09 02:19:10
  * @LastEditors: Please set LastEditors
  */
 
 import { Login, getUserPermsInfo } from '../../api/system/user'
-
+//
 const user = {
   state: {
     init: false,
@@ -81,6 +81,7 @@ const user = {
             commit('SET_BASEINFO', res.data.userBaseInfo)
             commit('SET_ROLEINFO', res.data.roleInfo)
             commit('SET_MENUSINFO', res.data.menusInfo)
+
             commit('INIT', true)
             resolve(res)
           })

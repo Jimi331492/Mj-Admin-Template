@@ -3,7 +3,7 @@
  * @Date: 2021-10-15 14:27:30
  * @Description: 
  * @FilePath: \music-web-vue\src\components\public\SideBar.vue
- * @LastEditTime: 2021-11-08 18:38:24
+ * @LastEditTime: 2021-11-09 04:42:01
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -37,6 +37,8 @@
 </template>
 
 <script>
+import { getAsyncRouter, getFinallyRouter, mountedRouter } from '../../utils/addRouter'
+
 export default {
   data() {
     return {
@@ -45,7 +47,11 @@ export default {
       activePath: '',
     }
   },
-  created() {},
+  created() {
+    getAsyncRouter(this.isMenusList)
+    const finallyRouter = getFinallyRouter()
+    mountedRouter(finallyRouter)
+  },
   computed: {
     isCollapse() {
       console.log(this.$store.getters.collapse)

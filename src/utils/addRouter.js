@@ -3,56 +3,60 @@
  * @Date: 2021-11-08 01:29:11
  * @Description:
  * @FilePath: \music-web-vue\src\utils\addRouter.js
- * @LastEditTime: 2021-11-08 03:54:59
+ * @LastEditTime: 2021-11-09 04:40:50
  * @LastEditors: Please set LastEditors
  */
+import { router, constRoutes } from '../router'
+import store from '../store'
 
-/**
- * 生成路由
- * @param {Array} menusList 格式化路由
- * @returns
- */
-export function addRouter(menusList) {
-  const router = []
-  try {
-    console.log('routerlist==', menusList)
-    menusList.forEach((e) => {
-      if (e.url !== null) {
-        let e_new = {
-          path: e.url,
-          name: e.url.split('/')[e.url.split('/').length - 1],
-          redirect: e.url,
-          component: import(/* webpackChunkName: "admin" */ `../views${e.url}`),
-        }
-        e_new = { ...e_new, meta: { title: e.menuName } }
-        router.push(e_new)
-      }
-    })
-  } catch (error) {
-    console.error(error)
-    return []
+router.beforeEach((to, form, next) => {
+  // to 将要访问的路径
+  // from 代表哪个路径跳转而来
+  // next()函数表示放行 next('./login')强制跳转
+
+  if (to.path === '/login') {
+    return next()
   }
-  return router
+  // 获取token
+  const tokenStr = store.getters.token
+  if (!tokenStr) return next('/login')
+  next()
+})
+
+let asyncRouterList = new Array()
+
+export const getAsyncRouter = (routers) => {
+  routers.filter((itemRouter) => {
+    if (itemRouter.url !== null) {
+      asyncRouterList.push({ path: `/${itemRouter.url}`, meta: { title: itemRouter.menuName }, component: () => import(`../views/${itemRouter.url}`) })
+      console.log(asyncRouterList)
+    }
+    // 是否存在子集
+    if (itemRouter.menus && itemRouter.menus.length) {
+      getAsyncRouter(itemRouter.menus)
+    }
+    return true
+  })
 }
 
-// export function addRouterchild(routerlist) {
-//   const router = []
-//   try {
-//     console.log('addRouterchild==', routerlist)
-//     routerlist.forEach((e) => {
-//       if (e.url !== null) {
-//         let e_new = {
-//           path: e.url,
-//           name: e.url.split('/')[e.url.split('/').length - 1],
-//           component: (resolve) => require([`../views${e.url}`], resolve),
-//         }
-//         e_new = { ...e_new, meta: { title: e.title } }
-//         router.push(e_new)
-//       }
-//     })
-//   } catch (error) {
-//     console.error(error)
-//     return []
-//   }
-//   return router
-// }
+export let finallyRouter = new Array()
+
+export const getFinallyRouter = () => {
+  let array = constRoutes[2].children.concat(asyncRouterList)
+  console.log('array', array)
+  finallyRouter = constRoutes
+  finallyRouter[2].children = array
+  console.log('finallyRouterList', finallyRouter)
+  return finallyRouter
+}
+
+export const mountedRouter = (finallyRouter) => {
+  finallyRouter.filter((item) => {
+    router.addRoute(item)
+  })
+}
+
+export function resetRouter() {
+  const newRouter = router.readyNewRouter()
+  router.resolve = newRouter.resolve // reset router
+}
