@@ -3,10 +3,11 @@
  * @Date: 2021-10-14 18:32:18
  * @Description:
  * @FilePath: \music-web-vue\src\router\index.js
- * @LastEditTime: 2021-11-08 06:08:28
+ * @LastEditTime: 2021-11-08 20:38:37
  * @LastEditors: Please set LastEditors
  */
 import { createRouter, createWebHashHistory } from 'vue-router'
+import store from '../store'
 const Login = () => import(/* webpackChunkName: "public" */ '../views/Login')
 const Layout = () => import(/* webpackChunkName: "public" */ '../views/Layout')
 const Error = () => import(/* webpackChunkName: "public" */ '../views/Error')
@@ -123,7 +124,7 @@ router.beforeEach((to, form, next) => {
     return next()
   }
   // 获取token
-  const tokenStr = window.localStorage.getItem('token')
+  const tokenStr = store.getters.token
   if (!tokenStr) return next('/login')
   next()
 })

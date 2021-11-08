@@ -3,7 +3,7 @@
  * @Date: 2021-11-08 04:35:05
  * @Description:
  * @FilePath: \music-web-vue\src\store\modules\global.js
- * @LastEditTime: 2021-11-08 04:50:50
+ * @LastEditTime: 2021-11-08 20:24:47
  * @LastEditors: Please set LastEditors
  */
 const global = {
@@ -23,7 +23,7 @@ const global = {
   },
   actions: {
     changeSideBar({ commit }, collapse) {
-      commit('SET_COLLAPSE', !collapse)
+      commit('SET_COLLAPSE', collapse)
     },
 
     saveTagHist({ commit }, tagList) {

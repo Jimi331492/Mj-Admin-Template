@@ -73,43 +73,22 @@ export default {
       this.$refs.loginFormRef.validate(async (valid) => {
         // console.log(valid)
         if (!valid) return
-        console.log(this.loginForm)
 
-        const res = await this.$store.dispatch('userLogin', this.loginForm)
-        if (res.code !== 200) return this.$message.error(res.msg)
+        try {
+          const res = await this.$store.dispatch('userLogin', this.loginForm)
 
-        const req = await this.$store.dispatch('getUserInfo', res.data.userId)
-        if (req.code !== 200) return this.$message.error(req.msg)
+          try {
+            await this.$store.dispatch('getUserInfo', res.data.userId)
 
-        // 2.通过编程式导航跳转到后台主页，/home
-        this.$message.success('登录成功！')
-        this.$router.push('/home')
-        // const { data: res } = await Login(this.loginForm)
-        // console.log(res)
-        // if (res.code !== 200) return this.$message.error(res.msg)
-        // else {
-        //   // this.token = res.data.token
-        //   // window.localStorage.setItem('token', this.token)
-        //   // this.$store.commit('setUserId', res.data.userId)
-        //   // this.$store.dispatch('getUserInfo', res.data.userId)
-        //   // const { data: req } = await getUserPermsInfo(res.data.userId)
-        //   // console.log(req)
-        //   // if (req.code !== 200) return this.$message.error(req.msg)
-        //   // this.$store.commit('setUserBaseInfo', req.data.userBaseInfo)
-        //   // this.$store.commit('setRoleInfo', req.data.roleInfo)
-        //   // this.$store.commit('setMenusInfo', req.data.menusInfo)
-        //   // this.$store.dispatch("SET_PERMISSION",req.data.);
-        // }
-
-        // // this.$message.success(res.msg)
-        // // console.log(res)
-        // // 1.将登录成功之后的 token， 保存到客户端的 sessionStorage 中
-        // // 项目中除了登录之外的其他API接口，必须在登录之后才能访问
-        // // token 直营在当前网站打开期间生效，所以将 token 保存在sessionStorage 中
-
-        // // 2.通过编程式导航跳转到后台主页，/home
-        // this.$message.success('登录成功！')
-        // this.$router.push('/home')
+            // 2.通过编程式导航跳转到后台主页，/home
+            this.$message.success('登录成功！')
+            this.$router.push('/home')
+          } catch (error) {
+            this.$message.error(error.msg)
+          }
+        } catch (error) {
+          this.$message.error(error.msg)
+        }
       })
     },
   },

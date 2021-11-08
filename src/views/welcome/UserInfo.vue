@@ -3,7 +3,7 @@
  * @Date: 2021-10-26 11:25:27
  * @Description: 
  * @FilePath: \music-web-vue\src\views\welcome\UserInfo.vue
- * @LastEditTime: 2021-11-08 06:05:51
+ * @LastEditTime: 2021-11-08 20:56:54
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -28,7 +28,7 @@
             </div> -->
 
             <!-- 信息Table -->
-            <el-descriptions class="baseInfo_table" :column="2" :size="mini" border>
+            <el-descriptions class="baseInfo_table" :column="2" border>
               <template #extra>
                 <el-button type="primary" size="small" @click="showInfoDialog">修改</el-button>
               </template>
@@ -95,7 +95,7 @@
           <!-- 角色信息展示table -->
           <el-form style="display: inline-block">
             <el-form-item label="角色名:" prop="roleName">
-              <el-tag type="primary">{{ roleInfo.roleName }}</el-tag>
+              <el-tag>{{ roleInfo.roleName }}</el-tag>
             </el-form-item>
             <el-form-item label="描述:" prop="remark">
               {{ roleInfo.remark }}
@@ -336,6 +336,11 @@ export default {
     // 监听dialog弹窗关闭事件
     dialogClosed() {
       this.$refs.baseInfoRef.resetFields()
+    },
+
+    // handleChange
+    handleChange(e) {
+      console.log(e)
     },
   },
 }

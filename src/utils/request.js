@@ -3,12 +3,12 @@
  * @Date: 2021-10-13 13:22:12
  * @Description:
  * @FilePath: \music-web-vue\src\utils\request.js
- * @LastEditTime: 2021-11-08 05:48:58
+ * @LastEditTime: 2021-11-08 20:32:23
  * @LastEditors: Please set LastEditors
  */
 import axios from 'axios'
 import store from '../store'
-import Cookies from 'js-cookie'
+// import Cookies from 'js-cookie'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import 'element-plus/dist/index.css'
 import Nprogress from 'nprogress'
@@ -47,7 +47,7 @@ const service = axios.create({
 service.interceptors.request.use(
   (config) => {
     Nprogress.start()
-    const tokens = localStorage.getItem('token') || Cookies.get('token')
+    const tokens = store.getters.token
     if (tokens) {
       config.headers['token'] = tokens
     }

@@ -3,7 +3,7 @@
  * @Date: 2021-10-14 18:32:18
  * @Description: 
  * @FilePath: \music-web-vue\src\App.vue
- * @LastEditTime: 2021-10-31 00:14:04
+ * @LastEditTime: 2021-11-08 18:18:49
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -20,6 +20,7 @@ export default {
 
     //在页面刷新时将vuex里的信息保存到sessionStorage里
     window.addEventListener('beforeunload', () => {
+      console.log(this.$store.state)
       sessionStorage.setItem('store', JSON.stringify(this.$store.state))
     })
   },

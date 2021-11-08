@@ -3,7 +3,7 @@
  * @Date: 2021-10-15 14:27:30
  * @Description: 
  * @FilePath: \music-web-vue\src\components\public\SideBar.vue
- * @LastEditTime: 2021-11-08 02:44:16
+ * @LastEditTime: 2021-11-08 18:38:24
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -19,12 +19,7 @@
       unique-opened
       router
     >
-      <!-- <el-menu-item
-        ><i class="el-icon-s-home"></i>
-       
-        <span>首页</span></el-menu-item
-      > -->
-      <el-sub-menu v-show="item.menus.length !== null" :index="item.menuId + ''" v-for="(item, index) in menuList" :key="index">
+      <el-sub-menu v-show="item.menus.length !== null" :index="item.menuId + ''" v-for="(item, index) in isMenusList" :key="index">
         <template #title>
           <i :class="item.icon"></i>
           <!-- 文本 -->
@@ -39,43 +34,29 @@
       </el-sub-menu>
     </el-menu>
   </div>
-  {{}}
 </template>
 
 <script>
-// import { getMenu } from '../../api/home/home'
-// import { getRoleMenus } from '../../api/system/role'
 export default {
   data() {
     return {
-      collapse: false,
       menuList: [],
-      quanxian: true,
-      wuquan: false,
-      roleId: '',
-      userId: '',
-      roleIdList: [],
       show: true,
-      form: {
-        roleId: '',
-      },
       activePath: '',
     }
   },
-  created() {
-    this.getMenuList()
-  },
-  mounted() {
-    // this.getMenuList()
-  },
+  created() {},
   computed: {
     isCollapse() {
-      return this.$store.state.collapse
+      console.log(this.$store.getters.collapse)
+      return this.$store.getters.collapse
     },
-    isMenusInfo() {
-      return this.$store.state.menusInfo
+    // 获取菜单列表
+    isMenusList() {
+      return this.$store.getters.menusInfo
     },
   },
+
   methods: {
     // getPerms(data) {
     //   data.forEach((item, i) => {
@@ -98,10 +79,6 @@ export default {
     //   })
     // },
 
-    // 获取菜单列表
-    async getMenuList() {
-      this.menuList = this.isMenusInfo
-    },
     btn(e) {
       console.log(e)
     },
@@ -130,6 +107,7 @@ export default {
 
 .sidebar-el-menu:not(.el-menu--collapse) {
   width: 250px;
+  min-height: 400px;
 }
 
 .sidebar > ul {

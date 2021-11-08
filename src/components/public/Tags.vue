@@ -3,7 +3,7 @@
  * @Date: 2021-10-15 14:27:16
  * @Description: 
  * @FilePath: \music-web-vue\src\components\public\Tags.vue
- * @LastEditTime: 2021-11-04 20:13:11
+ * @LastEditTime: 2021-11-08 19:00:15
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -39,6 +39,7 @@ export default {
   },
   methods: {
     isActive(path) {
+      console.log()
       return path === this.$route.fullPath
     },
     // 关闭单个标签
@@ -81,7 +82,6 @@ export default {
           // name: route.matched[0].components.default.meta['title']
         })
       }
-      this.$store.commit('setTagList', this.tagsList)
     },
     handleTags(command) {
       command === 'other' ? this.closeOther() : this.closeAll()
@@ -91,6 +91,9 @@ export default {
     showTags() {
       return this.tagsList.length > 0
     },
+    isTagList() {
+      return this.$store.getters.tagsList
+    },
   },
   watch: {
     $route(newValue) {
@@ -99,7 +102,7 @@ export default {
   },
   created() {
     this.setTags(this.$route)
-    console.log(this.$route)
+    console.log('this.$route', this.$route)
     // 监听关闭当前页面的标签页
     // bus.$on('close_current_tags', () => {
     //   console.log(this.tagsList)
@@ -119,6 +122,11 @@ export default {
     //   }
     // })
   },
+  // updated() {
+  //   if (this.isTagList !== []) {
+  //     this.tagsList = this.isTagList
+  //   }
+  // },
 }
 </script>
 

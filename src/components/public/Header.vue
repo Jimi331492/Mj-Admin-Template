@@ -3,13 +3,13 @@
  * @Date: 2021-10-15 14:26:59
  * @Description: 
  * @FilePath: \music-web-vue\src\components\public\Header.vue
- * @LastEditTime: 2021-11-08 06:06:37
+ * @LastEditTime: 2021-11-08 20:59:17
  * @LastEditors: Please set LastEditors
 -->
 <template>
   <div class="header">
     <!-- 折叠按钮 -->
-    <div class="collapse-btn" @click="collapseChange">
+    <div class="collapse-btn" @click="changeCollapse">
       <i class="el-icon-menu"></i>
     </div>
     <div class="logo">通用权限管理系统</div>
@@ -26,7 +26,7 @@
         <div class="user-avator"><img :src="oldAvatarUrl" /></div>
         <!-- 用户名下拉菜单 -->
         <el-dropdown class="user-name" trigger="click" @command="handleCommand">
-          <span class="el-dropdown-link"> {{ name }}<i class="el-icon-caret-bottom"></i> </span>
+          <span class="el-dropdown-link"> <i class="el-icon-caret-bottom"></i> </span>
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item divided command="setAvatar">设置头像</el-dropdown-item>
@@ -43,16 +43,16 @@
   <el-dialog :title="titles" v-model="dialogVisible" width="50%" @close="dialogClosed">
     <el-form ref="formRef" :model="form" label-width="100px" :rules="rules">
       <el-form-item v-if="titles == '设置头像'" label="图片地址:" prop="newAvatarUrl"
-        ><el-input class="long" v-model="form.newAvatarUrl" placeholder="请输入图片的网络地址" @change="avatarChange"> </el-input>
+        ><el-input class="long" v-model="form.newAvatarUrl" placeholder="请输入图片的网络地址"> </el-input>
       </el-form-item>
       <el-form-item v-if="titles == '修改密码'" label="旧密码:" prop="oldPwd">
-        <el-input v-model="form.oldPwd" placeholder="请输入旧密码" show-password @change="oldPwdChange" />
+        <el-input v-model="form.oldPwd" placeholder="请输入旧密码" show-password />
       </el-form-item>
       <el-form-item v-if="titles == '修改密码'" label="新密码:" prop="newPwd"
-        ><el-input v-model="form.newPwd" placeholder="请输入新密码" @change="newPwdChange" show-password />
+        ><el-input v-model="form.newPwd" placeholder="请输入新密码" show-password />
       </el-form-item>
       <el-form-item v-if="titles == '修改密码'" label="确认密码:" prop="confirePwd"
-        ><el-input v-model="form.confirePwd" placeholder="请确认密码" @change="confirePwdChange" show-password />
+        ><el-input v-model="form.confirePwd" placeholder="请确认密码" show-password />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -98,7 +98,6 @@ export default {
     }
 
     return {
-      collapse: true,
       fullscreen: false,
       titles: '',
       dialogVisible: false,
@@ -140,11 +139,8 @@ export default {
     // 用户名下拉菜单选择事件
     handleCommand(command) {
       if (command == 'loginout') {
-        localStorage.removeItem('token')
-        localStorage.removeItem('roleName')
-
         // sessionStorage.clear()
-        this.$store.commit('LOGOUT')
+        this.$store.commit('USER_LOGOUT')
         this.$router.push('/login')
       } else if (command == 'userinfo') {
         this.$router.push('/userinfo')
@@ -158,13 +154,8 @@ export default {
       }
     },
     // 侧边栏折叠
-    collapseChange() {
-      this.collapse = !this.collapse
-      this.$store.dispatch('changeSideBar', this.collapse)
-      // this.collapse = !this.collapse
-      // console.log(this.collapse)
-      // this.$store.commit('setCollapse', this.collapse)
-      // //   bus.$emit('collapse', this.collapse)
+    changeCollapse() {
+      this.$store.dispatch('changeSideBar', !this.$store.getters.collapse)
     },
     // 全屏事件
     handleFullScreen() {
@@ -208,7 +199,7 @@ export default {
           const { data: res } = await setAvatar(userId, url)
           if (res.code !== 200) return this.$message.error('操作失败')
           this.oldAvatarUrl = url
-          this.$store.commit('setAvatarUrl', url)
+          this.$store.commit('SET_AVATAR', url)
           this.$message.success('操作成功！')
           this.dialogVisible = false
         } else {
@@ -217,11 +208,9 @@ export default {
             console.log(res)
             if (res.code !== 200) return this.$message.error(res.msg)
             this.$message.success('操作成功！请重新登录！')
-            localStorage.removeItem('token')
-            localStorage.removeItem('roleName')
 
             // sessionStorage.clear()
-            this.$store.commit('LOGOUT')
+            this.$store.commit('USER_LOGOUT')
             this.$router.push('/login')
           }
         }

@@ -3,7 +3,7 @@
  * @Date: 2021-10-14 18:32:18
  * @Description:
  * @FilePath: \music-web-vue\src\store\index.js
- * @LastEditTime: 2021-11-08 05:14:26
+ * @LastEditTime: 2021-11-08 20:43:48
  * @LastEditors: Please set LastEditors
  */
 import { createStore } from 'vuex'
@@ -15,6 +15,23 @@ const store = createStore({
   modules: {
     global,
     user,
+  },
+  mutations: {
+    USER_LOGOUT() {
+      sessionStorage.clear()
+      user.userId = 0
+      global.collapse = false
+      user.token = ''
+      user.userBaseInfo = {}
+      user.roleInfo = {}
+      user.menusInfo = {}
+      user.init = false
+    },
+  },
+  actions: {
+    // USER_LOGOUT({ commit }) {
+    //   commit('USER_LOGOUT')
+    // },
   },
   getters,
 })

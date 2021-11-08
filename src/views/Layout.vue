@@ -3,7 +3,7 @@
  * @Date: 2021-10-15 14:26:34
  * @Description: 
  * @FilePath: \music-web-vue\src\views\Layout.vue
- * @LastEditTime: 2021-11-08 05:57:05
+ * @LastEditTime: 2021-11-08 18:24:31
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -24,38 +24,21 @@ import vSiderBar from '../components/public/SideBar.vue'
 import vTags from '../components/public/Tags.vue'
 export default {
   data() {
-    return {
-      userId: 0,
-    }
+    return {}
   },
   components: {
     vHeader,
     vSiderBar,
     vTags,
   },
-  created() {
-    // this.getUserBaseInfo()
-  },
+  created() {},
   mounted() {},
   computed: {
     isCollapse() {
       return this.$store.getters.collapse
     },
-    // isUserId() {
-    //   return this.$store.state.userId
-    // },
   },
-  methods: {
-    // async getUserBaseInfo() {
-    //   this.userId = this.isUserId
-    //   console.log(this.userId)
-    //   const { data: res } = await getUserInfo(this.userId)
-    //   console.log(res)
-    //   if (res.code !== 200) return this.$message.error(res.msg)
-    //   this.$store.commit('setAvatarUrl', res.data.avatar)
-    //   this.$store.commit('setUserBaseInfo', res.data)
-    // },
-  },
+  methods: {},
 }
 </script>
 
