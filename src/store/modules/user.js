@@ -3,20 +3,27 @@
  * @Date: 2021-11-08 01:46:20
  * @Description:
  * @FilePath: \music-web-vue\src\store\modules\user.js
- * @LastEditTime: 2021-11-09 02:19:10
+ * @LastEditTime: 2021-11-12 00:43:21
  * @LastEditors: Please set LastEditors
  */
 
 import { Login, getUserPermsInfo } from '../../api/system/user'
+
+import { permList, asyncRouter, homeRouter, getAsyncRouter, getHomeRouter } from '../../utils/myFunction'
+// import { asyncRouter} from '../../utils/myFunction'
 //
 const user = {
   state: {
     init: false,
+
     userId: 0,
     token: '',
     roleInfo: {},
     menusInfo: {},
+    asyncRouter: [],
+    permList: [],
     userBaseInfo: {},
+    homeRouter: {},
   },
   mutations: {
     INIT(state, init) {
@@ -50,6 +57,19 @@ const user = {
     SET_MENUSINFO(state, menusInfo) {
       state.menusInfo = menusInfo
     },
+
+    // 保存用户路由信息
+    SET_ASYNCROUTER(state, asyncRouter) {
+      state.asyncRouter = asyncRouter
+    },
+    // 保存HOME路由信息
+    SET_HOMEROUTER(state, homeRouter) {
+      state.homeRouter = homeRouter
+    },
+    // 保存用户按钮权限信息
+    SET_PEMRLIST(state, permList) {
+      state.permList = permList
+    },
   },
   actions: {
     // 封装用户登录的接口
@@ -78,12 +98,21 @@ const user = {
             const res = data.data
 
             if (res.code !== 200) return reject(res)
+            commit('INIT', true)
             commit('SET_BASEINFO', res.data.userBaseInfo)
             commit('SET_ROLEINFO', res.data.roleInfo)
             commit('SET_MENUSINFO', res.data.menusInfo)
+            getAsyncRouter(res.data.menusInfo)
+            getHomeRouter()
+            //保存
+            commit('SET_ASYNCROUTER', asyncRouter)
+            commit('SET_PEMRLIST', permList)
+            commit('SET_HOMEROUTER', homeRouter)
+            sessionStorage.setItem('permList', JSON.stringify(permList))
+            sessionStorage.setItem('homeRouter', JSON.stringify(homeRouter))
 
-            commit('INIT', true)
-            resolve(res)
+            console.log('homeRouter', homeRouter)
+            resolve(homeRouter)
           })
           .catch((error) => {
             reject(error)

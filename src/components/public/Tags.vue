@@ -3,7 +3,7 @@
  * @Date: 2021-10-15 14:27:16
  * @Description: 
  * @FilePath: \music-web-vue\src\components\public\Tags.vue
- * @LastEditTime: 2021-11-08 19:00:15
+ * @LastEditTime: 2021-11-10 17:56:57
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -102,7 +102,7 @@ export default {
   },
   created() {
     this.setTags(this.$route)
-    console.log('this.$route', this.$route)
+
     // 监听关闭当前页面的标签页
     // bus.$on('close_current_tags', () => {
     //   console.log(this.tagsList)

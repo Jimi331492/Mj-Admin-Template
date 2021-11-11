@@ -27,6 +27,8 @@
 </template>
 
 <script>
+import { createRoute } from '../router'
+import { reset } from '../utils/myFunction'
 export default {
   data() {
     return {
@@ -62,6 +64,7 @@ export default {
     }
   },
   created() {},
+
   methods: {
     // 重置按钮的点击事件
     resetLoginForm() {
@@ -77,17 +80,20 @@ export default {
         try {
           const res = await this.$store.dispatch('userLogin', this.loginForm)
 
-          try {
-            await this.$store.dispatch('getUserInfo', res.data.userId)
+          const req = await this.$store.dispatch('getUserInfo', res.data.userId)
+          console.log('req', req)
 
-            // 2.通过编程式导航跳转到后台主页，/home
-            this.$message.success('登录成功！')
-            this.$router.push('/home')
-          } catch (error) {
-            this.$message.error(error.msg)
-          }
+          createRoute(req)
+          //重置
+          reset()
+          // 2.通过编程式导航跳转到后台主页，/home
+          this.$message.success('登录成功！')
+
+          this.$router.push('/home')
+          console.log('this.$route', this.$route)
         } catch (error) {
-          this.$message.error(error.msg)
+          console.log(error)
+          this.$message.error(error)
         }
       })
     },

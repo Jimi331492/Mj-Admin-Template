@@ -3,17 +3,9 @@
  * @Date: 2021-11-05 07:29:28
  * @Description:
  * @FilePath: \music-web-vue\src\utils\has.js
- * @LastEditTime: 2021-11-05 08:16:30
- * @LastEditors:
+ * @LastEditTime: 2021-11-11 10:20:59
+ * @LastEditors: Please set LastEditors
  */
-// /*
-//  * @Author: 龙际妙
-//  * @Date: 2021-11-05 07:29:28
-//  * @Description:
-//  * @FilePath: \music-web-vue\src\utils\has.js
-//  * @LastEditTime: 2021-11-05 07:43:47
-//  * @LastEditors: Please set LastEditors
-//  */
 
 // import App from '../App.vue'
 

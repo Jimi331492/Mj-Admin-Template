@@ -3,7 +3,7 @@
  * @Date: 2021-10-24 22:55:25
  * @Description: 
  * @FilePath: \music-web-vue\src\views\welcome\Welcome.vue
- * @LastEditTime: 2021-10-24 23:01:57
+ * @LastEditTime: 2021-11-10 18:01:56
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -15,8 +15,12 @@ export default {
   data() {
     return {}
   },
-  created() {},
-  mounted() {},
+  created() {
+    console.log('this.$route', this.$route)
+  },
+  mounted() {
+    console.log('this.$rssoute', this.$route)
+  },
   methods: {},
 }
 </script>

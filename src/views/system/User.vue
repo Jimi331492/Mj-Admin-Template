@@ -3,7 +3,7 @@
  * @Date: 2021-10-24 22:51:08
  * @Description: 
  * @FilePath: \music-web-vue\src\views\system\User.vue
- * @LastEditTime: 2021-11-05 08:17:11
+ * @LastEditTime: 2021-11-12 01:41:15
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -28,7 +28,7 @@
         </el-col>
 
         <el-col :span="4">
-          <el-button type="primary" @click="addDialogVisible = true">添加用户</el-button>
+          <el-button type="primary" @click="addDialogVisible = true" v-has="{ perm: 'user:add' }">添加用户</el-button>
         </el-col>
       </el-row>
 
@@ -40,13 +40,30 @@
         <el-table-column prop="mobile" label="电话"> </el-table-column>
         <el-table-column prop="roles" label="角色"
           ><template v-slot="scope">
-            <el-tag v-for="item in scope.row.roles" :key="item" closable @close="removeRoleById(scope.row.userId, item.roleId)">{{ item.roleName }}</el-tag>
+            <el-tag
+              v-for="item in scope.row.roles"
+              :key="item"
+              closable
+              @close="removeRoleById(scope.row.userId, item.roleId)"
+              v-has="{ perm: 'user:revoke' }"
+              >{{ item.roleName }}</el-tag
+            >
           </template></el-table-column
         >
 
         <el-table-column label="状态">
           <template v-slot="scope">
-            <el-switch v-model="scope.row.status" active-value="1" inactive-value="0" @change="userStateChange(scope.row)"></el-switch>
+            <el-switch
+              v-model="scope.row.status"
+              active-value="1"
+              inactive-value="0"
+              @change="userStateChange(scope.row)"
+              v-has="{ perm: 'user:lock' }"
+            ></el-switch>
+            <div>
+              <el-tag v-if="scope.row.status === '1'">有效</el-tag>
+              <el-tag v-if="scope.row.status === '0'" type="danger">锁定</el-tag>
+            </div>
           </template>
         </el-table-column>
 
@@ -54,18 +71,25 @@
           <template v-slot="scope">
             <!-- 编辑按钮 -->
             <el-tooltip class="item" effect="dark" content="编辑用户" placement="top" :enterable="false">
-              <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row)"></el-button>
+              <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row)" v-has="{ perm: 'user:update' }"></el-button>
             </el-tooltip>
 
             <!-- 删除按钮 -->
             <el-tooltip class="item" effect="dark" content="删除用户" placement="top" :enterable="false">
-              <el-button type="danger" icon="el-icon-delete" size="mini" @click="confirmDeleteBox(scope.row.userId)"></el-button>
+              <el-button
+                type="danger"
+                icon="el-icon-delete"
+                size="mini"
+                @click="confirmDeleteBox(scope.row.userId)"
+                v-has="{ perm: 'user:delete' }"
+              ></el-button>
             </el-tooltip>
 
             <!-- 分配角色按钮 -->
             <el-tooltip class="item" effect="dark" content="分配角色" placement="top" :enterable="false">
-              <el-button type="warning" icon="el-icon-setting" size="mini" @click="showSetRole(scope.row)"></el-button>
+              <el-button type="warning" icon="el-icon-setting" size="mini" @click="showSetRole(scope.row)" v-has="{ perm: 'user:set' }"></el-button>
             </el-tooltip>
+            <!-- <div id="notAll">无权限</div> -->
           </template>
         </el-table-column>
       </el-table>
@@ -219,6 +243,7 @@ export default {
       roleList: [],
       limit: 5,
       total: 0,
+      stateClickable: null, //默认状态不可切换
       addDialogVisible: false,
       editDialogVisible: false,
       showSetRoleVisible: false,
@@ -279,6 +304,11 @@ export default {
   },
   created() {
     this.getUserList()
+  },
+  computed: {
+    isClickable() {
+      return this.$store.getters.isClickable
+    },
   },
   methods: {
     async getUserList() {

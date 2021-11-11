@@ -2,8 +2,8 @@
  * @Author: 龙际妙
  * @Date: 2021-11-04 14:57:49
  * @Description: 
- * @FilePath: \music-web-vue\src\views\error.vue
- * @LastEditTime: 2021-11-04 16:17:45
+ * @FilePath: \music-web-vue\src\views\Error.vue
+ * @LastEditTime: 2021-11-10 18:02:44
  * @LastEditors: Please set LastEditors
 -->
 

@@ -3,7 +3,7 @@
  * @Date: 2021-10-24 22:51:19
  * @Description: 
  * @FilePath: \music-web-vue\src\views\system\Role.vue
- * @LastEditTime: 2021-11-05 01:28:49
+ * @LastEditTime: 2021-11-12 01:43:02
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -17,7 +17,7 @@
 
     <!-- 卡片内容区 -->
     <el-card>
-      <el-button type="primary" @click="addRoleVisible = true">添加角色</el-button>
+      <el-button type="primary" @click="addRoleVisible = true" v-has="{ perm: 'role:add' }">添加角色</el-button>
       <!-- 角色列表区域 -->
       <el-table :data="rolelist" border stripe>
         <!-- 展开列 -->
@@ -26,7 +26,7 @@
             <el-row :class="['bdbottom', index1 === 0 ? 'bdtop' : '', 'rightTags']" v-for="(item1, index1) in scope.row.menus" :key="item1.menuId">
               <!-- 渲染一级权限 -->
               <el-col :span="5">
-                <el-tag closable @close="removeRightById(scope.row, item1.menuId)">{{ item1.menuName }}</el-tag>
+                <el-tag closable @close="removeRightById(scope.row, item1.menuId)" v-has="{ perm: 'role:revoke' }">{{ item1.menuName }}</el-tag>
                 <i class="el-icon-caret-right"></i>
               </el-col>
               <!-- 渲染二级和三级权限 -->
@@ -34,11 +34,20 @@
                 <!-- 通过for循环 嵌套渲染二级权限 -->
                 <el-row :class="[index2 === 0 ? '' : 'bdtop', 'rightTags']" v-for="(item2, index2) in item1.menus" :key="item2.menuId">
                   <el-col :span="4">
-                    <el-tag type="success" closable @close="removeRightById(scope.row, item2.menuId)">{{ item2.menuName }}</el-tag>
+                    <el-tag type="success" closable @close="removeRightById(scope.row, item2.menuId)" v-has="{ perm: 'role:revoke' }">{{
+                      item2.menuName
+                    }}</el-tag>
                     <!-- <i class="el-icon-caret-right"></i> -->
                   </el-col>
                   <el-col :span="15">
-                    <el-tag v-for="item3 in item2.menus" :key="item3.id" type="warning" closable @close="removeRightById(scope.row, item3.menuId)">
+                    <el-tag
+                      v-for="item3 in item2.menus"
+                      :key="item3.id"
+                      type="warning"
+                      closable
+                      @close="removeRightById(scope.row, item3.menuId)"
+                      v-has="{ perm: 'role:revoke' }"
+                    >
                       {{ item3.menuName }}
                     </el-tag>
                   </el-col>
@@ -55,17 +64,17 @@
           <template v-slot="scope">
             <!-- 编辑按钮 -->
             <el-tooltip class="item" effect="dark" content="编辑角色" placement="top" :enterable="false">
-              <el-button type="primary" icon="el-icon-edit" @click="showEditRole(scope.row.roleId)">编辑</el-button>
+              <el-button type="primary" icon="el-icon-edit" @click="showEditRole(scope.row.roleId)" v-has="{ perm: 'role:update' }">编辑</el-button>
             </el-tooltip>
 
             <!-- 删除按钮 -->
             <el-tooltip class="item" effect="dark" content="删除角色" placement="top" :enterable="false">
-              <el-button type="danger" icon="el-icon-delete" @click="confirmDeleteRole(scope.row.roleId)">删除</el-button>
+              <el-button type="danger" icon="el-icon-delete" @click="confirmDeleteRole(scope.row.roleId)" v-has="{ perm: 'role:delete' }">删除</el-button>
             </el-tooltip>
 
             <!-- 分配权限按钮 -->
             <el-tooltip class="item" effect="dark" content="分配权限" placement="top" :enterable="false">
-              <el-button type="warning" icon="el-icon-setting" @click="showSetRight(scope.row)">分配权限</el-button>
+              <el-button type="warning" icon="el-icon-setting" @click="showSetRight(scope.row)" v-has="{ perm: 'role:set' }">分配权限</el-button>
             </el-tooltip>
           </template>
         </el-table-column>
