@@ -3,7 +3,7 @@
  * @Date: 2021-10-15 14:26:34
  * @Description: 
  * @FilePath: \music-web-vue\src\views\Layout.vue
- * @LastEditTime: 2021-11-10 18:01:50
+ * @LastEditTime: 2021-11-16 05:26:33
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -12,6 +12,25 @@
   <div class="content-box" :class="isCollapse ? '' : 'content-collapse'">
     <v-tags></v-tags>
     <div class="content">
+      <vue-particles
+        class="login-background"
+        color="#000"
+        :particleOpacity="0.7"
+        :particlesNumber="100"
+        shapeType="circle"
+        :particleSize="2"
+        linesColor="#000"
+        :linesWidth="1"
+        :lineLinked="true"
+        :lineOpacity="0.4"
+        :linesDistance="150"
+        :moveSpeed="3"
+        :hoverEffect="true"
+        hoverMode="grab"
+        :clickEffect="true"
+        clickMode="push"
+      >
+      </vue-particles>
       <router-view></router-view>
     </div>
   </div>
@@ -53,13 +72,38 @@ export default {
   -webkit-transition: left 0.3s ease-in-out;
   transition: left 0.3s ease-in-out;
   background: #f0f0f0;
+  overflow: hidden;
 
   .content {
-    width: auto;
+    width: 100%;
     height: 100%;
     padding: 10px;
     overflow-y: scroll;
+    background-color: #fff;
     box-sizing: border-box;
+
+    .login-background {
+      width: 100%;
+      height: 100%;
+      padding: 10px;
+      z-index: 0;
+      position: absolute;
+    }
+
+    .login-background::before {
+      content: '';
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      // background-image: url('https://cdn.jsdelivr.net/gh/Jimi331492/cdn@1.3/img/cover/(4).jpg.webp');
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+      -moz-background-size: 100% 100%;
+      padding: 10px;
+      // filter: blur(2px);
+      // -webkit-filter: blur(2px);
+      z-index: -1;
+    }
   }
 }
 

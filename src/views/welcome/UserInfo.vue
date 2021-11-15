@@ -3,7 +3,7 @@
  * @Date: 2021-10-26 11:25:27
  * @Description: 
  * @FilePath: \music-web-vue\src\views\welcome\UserInfo.vue
- * @LastEditTime: 2021-11-08 20:56:54
+ * @LastEditTime: 2021-11-16 00:13:05
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -81,26 +81,22 @@
               <div v-else><el-tag type="success">有效</el-tag></div>
             </el-form-item>
             <el-form-item label="注册日期:" prop="createTime">
-              {{ this.format(this.userInfo.createTime) }}
+              {{ this.userInfo.createTime === null ? '出现bug了' : this.format(this.userInfo.createTime) }}
             </el-form-item>
             <el-form-item label="最近修改日期:" prop="modifyTime">
-              {{ this.format(this.userInfo.modifyTime) }}
+              {{ this.userInfo.modifyTime === null ? '无' : this.format(this.userInfo.modifyTime) }}
             </el-form-item>
             <el-form-item label="最近登录日期:" prop="lastLoginTime">
-              {{ this.format(this.userInfo.lastLoginTime) }}
+              {{ this.userInfo.lastLoginTime === null ? '出现bug了' : this.format(this.userInfo.lastLoginTime) }}
             </el-form-item>
           </el-form>
         </el-collapse-item>
-        <el-collapse-item title="角色信息" name="roleInfo">
+        <el-collapse-item title="角色信息" name="rolesInfo">
           <!-- 角色信息展示table -->
-          <el-form style="display: inline-block">
-            <el-form-item label="角色名:" prop="roleName">
-              <el-tag>{{ roleInfo.roleName }}</el-tag>
-            </el-form-item>
-            <el-form-item label="描述:" prop="remark">
-              {{ roleInfo.remark }}
-            </el-form-item>
-          </el-form>
+          <div v-for="(role, index) in rolesInfo" :key="index">
+            <el-tag>{{ role.roleName }}</el-tag>
+            <el-tag>{{ role.remark }}</el-tag>
+          </div>
         </el-collapse-item>
         <el-collapse-item title="权限信息" name="authoInfo">
           <el-row :class="['bdbottom', index1 === 0 ? 'bdtop' : '', 'rightTags']" v-for="(item1, index1) in menus" :key="item1.menuId">
@@ -213,7 +209,7 @@ export default {
       deaultArray: ['baseInfo', 'accountInfo'],
       userId: 0, //id
       userInfo: {},
-      roleInfo: {},
+      rolesInfo: [],
       menus: [],
       sumbitForm: {
         userId: 0, //用户Id
@@ -267,7 +263,7 @@ export default {
       if (res.code !== 200) return this.$message.error(res.msg)
 
       this.userInfo = res.data.userBaseInfo
-      this.roleInfo = res.data.roleInfo
+      this.rolesInfo = res.data.roleInfo
       this.menus = res.data.menusInfo
     },
     format(dateObject) {

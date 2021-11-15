@@ -3,7 +3,7 @@
  * @Date: 2021-10-14 18:32:18
  * @Description:
  * @FilePath: \music-web-vue\src\router\index.js
- * @LastEditTime: 2021-11-11 21:17:23
+ * @LastEditTime: 2021-11-14 15:38:47
  * @LastEditors: Please set LastEditors
  */
 import { createRouter, createWebHashHistory } from 'vue-router'
@@ -137,7 +137,7 @@ export function createRoute(homeRouter) {
   if (!homeRouter || homeRouter.length == 0) return
 
   router.addRoute(homeRouter)
-  router.addRoute({ path: '/:pathMatch(.*)*', name: 'err', component: Error })
+  router.addRoute({ path: '/:pathMatch(.*)*', name: 'err', meta: { title: '网页不存在' }, component: Error })
 }
 
 //刷新时浏览器路由不丢失
@@ -145,7 +145,7 @@ if (sessionStorage.getItem('homeRouter')) {
   let homeRouterStr = sessionStorage.getItem('homeRouter')
   let homeRouter = JSON.parse(homeRouterStr)
 
-  console.log(homeRouter, 'obj')
+  // console.log(homeRouter, 'obj')
   homeRouter.component = Layout
   homeRouter.children.forEach((item, index) => {
     if (index === 0) {

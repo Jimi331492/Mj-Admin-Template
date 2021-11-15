@@ -3,7 +3,7 @@
  * @Date: 2021-10-24 22:51:08
  * @Description: 
  * @FilePath: \music-web-vue\src\views\system\User.vue
- * @LastEditTime: 2021-11-12 01:41:15
+ * @LastEditTime: 2021-11-14 15:45:07
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -67,7 +67,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="400px">
+        <el-table-column label="操作" width="400px" v-if="isHiddenLastColumn">
           <template v-slot="scope">
             <!-- 编辑按钮 -->
             <el-tooltip class="item" effect="dark" content="编辑用户" placement="top" :enterable="false">
@@ -300,6 +300,8 @@ export default {
           { validator: checkMobile, trigger: 'blur' },
         ],
       },
+
+      ifHiddenLastColumn: true, //是否隐藏最后一列
     }
   },
   created() {
@@ -308,6 +310,16 @@ export default {
   computed: {
     isClickable() {
       return this.$store.getters.isClickable
+    },
+    //如果一个操作里一个按钮的权限都没有 就不显示操作这一列
+    isHiddenLastColumn() {
+      let perm1 = ['user:update']
+      let perm2 = ['user:delete']
+      let perm3 = ['user:set']
+
+      let bol = this.$_has(perm1) || this.$_has(perm2) || this.$_has(perm3)
+      console.log(bol)
+      return bol
     },
   },
   methods: {

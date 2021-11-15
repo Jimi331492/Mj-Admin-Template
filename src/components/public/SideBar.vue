@@ -3,7 +3,7 @@
  * @Date: 2021-10-15 14:27:30
  * @Description: 
  * @FilePath: \music-web-vue\src\components\public\SideBar.vue
- * @LastEditTime: 2021-11-10 16:13:43
+ * @LastEditTime: 2021-11-16 04:48:00
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -13,9 +13,9 @@
       @open="btn"
       :default-active="activePath"
       :collapse="isCollapse"
-      background-color="#324157"
+      background-color="#242633"
       text-color="#bfcbd9"
-      active-text-color="#20a0ff"
+      active-text-color="#e6a23c"
       unique-opened
       router
     >
@@ -91,7 +91,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .sidebar {
   display: block;
   position: absolute;
@@ -99,6 +99,20 @@ export default {
   top: 70px;
   bottom: 0;
   overflow-y: scroll;
+}
+
+// //子节点选中样式(前面只有一级，后面子级)
+// .el-menu-item.is-active，.el-submenu .el-menu-item.is-active {
+//   background-color: red !important;
+// }
+// //子节点选中鼠标移入样式
+// .el-menu-item.is-active:hover，.el-submenu .el-menu-item:hover {
+//   background-color: pink !important;
+// }
+// //子节点鼠标移入样式
+.el-menu-item:active {
+  background-color: #6b63b5;
+  filter: brightness(1.5); //设置亮度值，范围：0-1
 }
 
 .sidebar::-webkit-scrollbar {

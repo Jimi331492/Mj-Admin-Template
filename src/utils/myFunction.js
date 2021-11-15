@@ -3,7 +3,7 @@
  * @Date: 2021-11-10 14:29:35
  * @Description:
  * @FilePath: \music-web-vue\src\utils\myFunction.js
- * @LastEditTime: 2021-11-11 21:16:37
+ * @LastEditTime: 2021-11-14 15:38:00
  * @LastEditors: Please set LastEditors
  */
 // import Layout from '../views/Layout'
@@ -65,7 +65,7 @@ export const getAsyncRouter = (menusInfo) => {
     if (item.menus && item.menus.length) {
       getAsyncRouter(item.menus)
     }
-    console.log('item', item)
+    // console.log('item', item)
   })
   //   获取
 }
@@ -75,8 +75,8 @@ export const getHomeRouter = () => {
   let array = homeRouter.children.concat(asyncRouter)
   homeRouter.children = array
 
-  console.log('asyncRouter', asyncRouter)
-  console.log('homeRouter', homeRouter)
+  // console.log('asyncRouter', asyncRouter)
+  // console.log('homeRouter', homeRouter)
 }
 
 export const reset = () => {

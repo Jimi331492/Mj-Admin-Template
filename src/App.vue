@@ -3,7 +3,7 @@
  * @Date: 2021-10-14 18:32:18
  * @Description: 
  * @FilePath: \music-web-vue\src\App.vue
- * @LastEditTime: 2021-11-10 20:47:23
+ * @LastEditTime: 2021-11-14 15:18:31
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -16,6 +16,8 @@ export default {
   created() {
     if (sessionStorage.getItem('store')) {
       this.$store.replaceState(Object.assign({}, this.$store.state, JSON.parse(sessionStorage.getItem('store'))))
+      let userId = this.$store.getters.userId
+      this.$store.dispatch('getUserInfo', userId)
     }
 
     // if (sessionStorage.getItem('homeRouter')) {

@@ -1,11 +1,33 @@
 <template>
+  <!-- #707070 -->
+  <vue-particles
+    class="login-background"
+    color="#fff"
+    :particleOpacity="0.7"
+    :particlesNumber="150"
+    shapeType="edge"
+    :particleSize="2"
+    linesColor="#fff"
+    :linesWidth="1.5"
+    :lineLinked="true"
+    :lineOpacity="0.3"
+    :linesDistance="200"
+    :moveSpeed="3"
+    :hoverEffect="true"
+    hoverMode="grab"
+    :clickEffect="true"
+    clickMode="push"
+  >
+  </vue-particles>
   <div class="login_container">
     <!-- 登录框 -->
     <div class="login_box">
-      <!-- 头像区域 -->
-      <div class="avatar_box">
-        <img src="..\assets\logo.png" alt="avatar" />
+      <!-- logo区域 -->
+      <div class="logo">
+        RBAC|Mj-admin
+        <div>通用权限管理模板</div>
       </div>
+
       <!-- 登录表单区域 -->
       <el-form ref="loginFormRef" :model="loginForm" :rules="loginFormRules" class="login_form">
         <!-- 用户名 -->
@@ -16,12 +38,12 @@
         <el-form-item prop="password">
           <el-input v-model="loginForm.password" prefix-icon="el-icon-lock" type="password"></el-input>
         </el-form-item>
-        <!-- 按钮区域 -->
-        <el-form-item class="btns">
-          <el-button type="primary" @click="login">登录</el-button>
-          <el-button type="info" @click="resetLoginForm">重置</el-button>
-        </el-form-item>
       </el-form>
+
+      <!-- 按钮区域 -->
+      <div class="btns">
+        <el-button type="primary" @click="login" class="btnLogin">登录</el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -102,50 +124,62 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.login_container {
-  background-color: pink;
+.login-background {
+  width: 100%;
+  height: 100%; /**宽高100%是为了图片铺满屏幕 */
+  z-index: 0;
+  position: absolute;
+}
+
+.login-background::before {
+  content: '';
+  position: absolute;
+  // background-image: url('https://cdn.jsdelivr.net/gh/Jimi331492/cdn@1.3/img/cover/(4).jpg.webp');
+  background-image: url('../assets/bg.png');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  -moz-background-size: 100% 100%;
+  // filter: blur(2px);
+  // -webkit-filter: blur(2px);
+  z-index: -1;
   height: 100%;
+  width: 100%;
 }
 
 .login_box {
   width: 450px;
   height: 300px;
-  background-color: #fff;
-  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+  z-index: 0;
+  background-color: #fff;
+  border-radius: 25px;
+  .logo {
+    font: 24px 'D-Din';
+    margin: calc(5% + 5px) auto;
+    div {
+      font: 18px '站酷黑体';
+      margin-top: 3px;
+      text-align: center;
+    }
+  }
   .login_form {
-    position: absolute;
-    bottom: 0;
     width: 100%;
     padding: 0 50px 0 50px;
-    box-sizing: border-box;
+    z-index: 0;
   }
-}
-
-.avatar_box {
-  height: 130px;
-  width: 130px;
-  border: 1px solid #eee;
-  border-radius: 50%;
-  padding: 10px;
-  box-shadow: 0 0 10px #ddd;
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #fff;
-  img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background-color: #eee;
+  .btns {
+    margin: 2% auto;
+    .btnLogin {
+      width: 120px;
+      background-color: #000;
+      border-radius: 20px;
+      margin: 0 auto;
+    }
   }
-}
-
-.btns {
-  display: flex;
-  float: right;
 }
 </style>

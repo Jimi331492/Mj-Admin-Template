@@ -3,7 +3,7 @@
  * @Date: 2021-10-24 22:51:19
  * @Description: 
  * @FilePath: \music-web-vue\src\views\system\Role.vue
- * @LastEditTime: 2021-11-12 01:43:02
+ * @LastEditTime: 2021-11-14 15:16:57
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -27,6 +27,7 @@
               <!-- 渲染一级权限 -->
               <el-col :span="5">
                 <el-tag closable @close="removeRightById(scope.row, item1.menuId)" v-has="{ perm: 'role:revoke' }">{{ item1.menuName }}</el-tag>
+                <el-tag v-no-has="{ perm: 'role:revoke' }">{{ item1.menuName }} </el-tag>
                 <i class="el-icon-caret-right"></i>
               </el-col>
               <!-- 渲染二级和三级权限 -->
@@ -37,6 +38,7 @@
                     <el-tag type="success" closable @close="removeRightById(scope.row, item2.menuId)" v-has="{ perm: 'role:revoke' }">{{
                       item2.menuName
                     }}</el-tag>
+                    <el-tag type="success" v-no-has="{ perm: 'role:revoke' }">{{ item2.menuName }}</el-tag>
                     <!-- <i class="el-icon-caret-right"></i> -->
                   </el-col>
                   <el-col :span="15">
@@ -50,6 +52,9 @@
                     >
                       {{ item3.menuName }}
                     </el-tag>
+                    <el-tag v-for="item3 in item2.menus" :key="item3.id" type="warning" v-no-has="{ perm: 'role:revoke' }">
+                      {{ item3.menuName }}
+                    </el-tag>
                   </el-col>
                 </el-row>
               </el-col>
@@ -60,7 +65,7 @@
         <el-table-column prop="roleName" label="角色名称"></el-table-column>
         <el-table-column prop="remark" label="角色描述"></el-table-column>
 
-        <el-table-column label="操作" width="400px">
+        <el-table-column label="操作" width="400px" v-if="ifHiddenLastColumn">
           <template v-slot="scope">
             <!-- 编辑按钮 -->
             <el-tooltip class="item" effect="dark" content="编辑角色" placement="top" :enterable="false">
@@ -182,10 +187,14 @@ export default {
         roleName: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
         roleDesc: [{ required: false, message: '请输入角色描述', trigger: 'blur' }],
       },
+
+      ifHiddenLastColumn: true,
     }
   },
   created() {
     this.getRoleList()
+
+    this.hiddenLastColumn()
   },
   methods: {
     async getRoleList() {
@@ -332,7 +341,9 @@ export default {
       }
       const { data: res } = await setAuth(data)
       if (res.code !== 200) return this.$message.error('分配权限失败！')
+
       this.$message.success('分配权限成功！')
+
       this.getRoleList()
       this.showSetRightVisible = false
     },
@@ -342,6 +353,13 @@ export default {
       console.log(currentPage)
       this.queryInfo.currentPage = currentPage
       this.getRoleList()
+    },
+
+    //如果一个操作里一个按钮的权限都没有 就不显示操作这一列
+    hiddenLastColumn() {
+      let perm = 'role:update,role:delete,role:set'
+      let value = perm.split(',')
+      this.ifHiddenLastColumn = this.$_has(value)
     },
   },
 }

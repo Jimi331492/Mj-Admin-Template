@@ -3,7 +3,7 @@
  * @Date: 2021-10-15 14:27:16
  * @Description: 
  * @FilePath: \music-web-vue\src\components\public\Tags.vue
- * @LastEditTime: 2021-11-10 17:56:57
+ * @LastEditTime: 2021-11-16 04:47:38
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -18,7 +18,7 @@
     </ul>
     <div class="tags-close-box">
       <el-dropdown @command="handleTags">
-        <el-button size="mini" type="primary"> 标签选项<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
+        <el-button size="mini" type="warning"> 标签选项<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
         <template #dropdown>
           <el-dropdown-menu size="small">
             <el-dropdown-item command="other">关闭其他</el-dropdown-item>
@@ -137,7 +137,7 @@ export default {
   overflow: hidden;
   background: #fff;
   padding-right: 120px;
-  box-shadow: 0 5px 10px #ddd;
+  box-shadow: 0 5px 10px gray;
 }
 
 .tags ul {
@@ -155,11 +155,11 @@ export default {
   cursor: pointer;
   height: 23px;
   line-height: 23px;
-  border: 1px solid #e9eaec;
+  border: 1px solid gray;
   background: #fff;
   padding: 0 5px 0 12px;
   vertical-align: middle;
-  color: #666;
+  color: #fff;
   -webkit-transition: all 0.3s ease-in;
   -moz-transition: all 0.3s ease-in;
   transition: all 0.3s ease-in;
@@ -170,7 +170,7 @@ export default {
 }
 
 .tags-li.active {
-  background: #fa9;
+  background: #e6a23c;
   color: #fff;
 }
 

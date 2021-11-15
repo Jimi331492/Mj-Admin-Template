@@ -3,7 +3,7 @@
  * @Date: 2021-10-15 14:26:59
  * @Description: 
  * @FilePath: \music-web-vue\src\components\public\Header.vue
- * @LastEditTime: 2021-11-08 20:59:17
+ * @LastEditTime: 2021-11-16 04:18:56
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -228,7 +228,7 @@ export default {
 .header {
   position: relative;
   box-sizing: border-box;
-  background-color: #0d9;
+  background-color: #242633;
   width: 100%;
   height: 70px;
   font-size: 22px;

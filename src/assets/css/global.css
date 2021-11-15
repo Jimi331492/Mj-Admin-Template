@@ -23,7 +23,9 @@ html,
   .el-table{
     margin-top: 15px;
     font-size: 12px;
+   
   }
+ 
   .el-cascader{
     width: 50%;
   }
@@ -43,4 +45,19 @@ html,
   
   .el-step__title{
   font-size: 15px !important;
+  }
+
+  @font-face {
+    font-family: '站酷黑体';
+    src:url("../font/站酷酷黑体.ttf")
+  }
+
+  @font-face {
+    font-family: '站酷意大利体';
+    src:url("../font/ZCOOL Addict Italic 01.ttf")
+  }
+
+  @font-face {
+    font-family: 'D-Din';
+    src:url("../font/D-DIN-Bold.ttf")
   }

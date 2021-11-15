@@ -3,7 +3,7 @@
  * @Date: 2021-10-24 22:51:29
  * @Description: 
  * @FilePath: \music-web-vue\src\views\system\Menu.vue
- * @LastEditTime: 2021-11-05 07:14:55
+ * @LastEditTime: 2021-11-15 18:55:12
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -69,7 +69,7 @@ export default {
       if (res.code !== 200) {
         return this.$message.error('获取权限列表失败!')
       }
-      this.rightlist = res.data
+      this.rightlist = res.data.menus
 
       console.log(this.rightlist)
     },

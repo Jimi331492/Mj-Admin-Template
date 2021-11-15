@@ -3,7 +3,7 @@
  * @Date: 2021-10-14 18:32:18
  * @Description:
  * @FilePath: \music-web-vue\src\main.js
- * @LastEditTime: 2021-11-12 01:40:33
+ * @LastEditTime: 2021-11-16 03:36:11
  * @LastEditors: Please set LastEditors
  */
 import { createApp } from 'vue'
@@ -13,6 +13,7 @@ import store from './store'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import locale from 'element-plus/lib/locale/lang/zh-cn'
+import VueParticles from 'vue-particles'
 import './assets/css/global.css'
 import axios from 'axios'
 import './permission' //路由权限
@@ -40,31 +41,32 @@ app.config.globalProperties.$http = axios
 
 // 权限检查方法
 app.config.globalProperties.$_has = function (value) {
-  let isExist = false
-  // 获取用户按钮权限
+  // 获取用户的所有按钮权限
 
   let perms = [...store.getters.permList]
 
-  if (perms == undefined || perms == null) {
-    return false
+  if (!(perms instanceof Array) || !(value instanceof Array)) return false
+  const len = value.length
+  // perms的长度小于value的长度，直接返回false
+  if (perms.length < len) return false
+  for (let i = 0; i < len; i++) {
+    // 遍历value中的元素，遇到perms没有包含某个元素的，直接返回false
+    if (!perms.includes(value[i])) return false
   }
-  if (perms.indexOf(value) > -1) {
-    isExist = true
-  }
-
-  return isExist
+  // 遍历结束，返回true
+  return true
 }
 
-// 注册 (功能指令)
+// 注册 按钮检测(功能指令)
 app.directive('has', (el, binding) => {
+  let perm = binding.value.perm.split(',')
   // 没有权限
-  if (!app.config.globalProperties.$_has(binding.value.perm)) {
+  if (!app.config.globalProperties.$_has(perm)) {
     if (binding.value.perm === 'user:revoke') {
       //   el.removeChild(el.lastChild)
       el.lastChild.style.display = 'none'
-      console.log('ele', el.lastChild)
+      // console.log('ele', el.lastChild)
     } else {
-      console.log(el.parentNode)
       el.style.display = 'none'
     }
   } else {
@@ -73,12 +75,16 @@ app.directive('has', (el, binding) => {
       el.nextSibling.style.display = 'none'
     }
     //   有权限
-
-    // if (binding.value.perm === 'user:set' || binding.value.perm === 'user:update' || binding.value.perm === 'user:delete') {
-    //   // 无权限没有被隐藏
-    //   el.set
-    // }
   }
 })
 
-app.use(router).use(store).use(ElementPlus, { locale }).mount('#app')
+// 注册 如果没有权限显示啥(功能指令)
+app.directive('no-has', (el, binding) => {
+  let perm = binding.value.perm.split(',')
+  // 没有权限
+  if (app.config.globalProperties.$_has(perm)) {
+    el.style.display = 'none'
+  }
+})
+
+app.use(router).use(store).use(ElementPlus, { locale }).use(VueParticles).mount('#app')
