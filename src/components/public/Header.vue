@@ -3,7 +3,7 @@
  * @Date: 2021-10-15 14:26:59
  * @Description: 
  * @FilePath: \music-web-vue\src\components\public\Header.vue
- * @LastEditTime: 2021-11-16 04:18:56
+ * @LastEditTime: 2021-11-22 19:38:17
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -16,6 +16,7 @@
     <div class="header-right">
       <div class="header-user-con">
         <!-- 全屏显示 -->
+        <div class="userInfo" @click="toUserInfo">个人中心</div>
         <div class="btn-fullscreen" @click="handleFullScreen">
           <el-tooltip effect="dark" :content="fullscreen ? `取消全屏` : `全屏`" placement="bottom">
             <i class="el-icon-rank"></i>
@@ -23,14 +24,16 @@
         </div>
         <!-- 消息中心 -->
         <!-- 用户头像 -->
-        <div class="user-avator"><img :src="oldAvatarUrl" /></div>
+        <div class="user-avator">
+          <img :src="oldAvatarUrl" v-if="oldAvatarUrl" />
+          <canvas id="defalut" v-else></canvas>
+        </div>
         <!-- 用户名下拉菜单 -->
         <el-dropdown class="user-name" trigger="click" @command="handleCommand">
           <span class="el-dropdown-link"> <i class="el-icon-caret-bottom"></i> </span>
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item divided command="setAvatar">设置头像</el-dropdown-item>
-              <el-dropdown-item divided command="userinfo">个人信息</el-dropdown-item>
               <el-dropdown-item divided command="updatePwd">修改密码</el-dropdown-item>
               <el-dropdown-item divided command="loginout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
@@ -65,7 +68,8 @@
 </template>
 
 <script>
-import { setAvatar, updatePwd } from '../../api/system/user'
+import { setAvatar, updatePwd, Logout } from '../../api/system/user'
+import { draw } from '../../utils/avatar'
 export default {
   data() {
     var checkUrl = (rule, value, callback) => {
@@ -102,6 +106,7 @@ export default {
       titles: '',
       dialogVisible: false,
       message: 2,
+
       oldAvatarUrl: '',
       form: {
         userId: 0,
@@ -120,30 +125,32 @@ export default {
   },
   created() {
     this.oldAvatarUrl = this.getAvatarUrl
+    console.log('this.oldAvatarUrl', this.oldAvatarUrl)
     this.form.userId = this.isUserId
   },
+
   computed: {
     getAvatarUrl() {
       return this.$store.getters.userBaseInfo.avatar
+    },
+    isUserName() {
+      return this.$store.getters.userBaseInfo.username
     },
     isUserId() {
       return this.$store.getters.userId
     },
   },
   mounted() {
-    // if (document.body.clientWidth < 1500) {
-    //   this.collapseChange()
-    // }
+    if (!this.oldAvatarUrl) draw(this.isUserName)
   },
   methods: {
     // 用户名下拉菜单选择事件
     handleCommand(command) {
       if (command == 'loginout') {
         // sessionStorage.clear()
+        Logout(this.isUserName)
         this.$store.commit('USER_LOGOUT')
         this.$router.push('/login')
-      } else if (command == 'userinfo') {
-        this.$router.push('/userinfo')
       } else if (command == 'setAvatar') {
         this.titles = '设置头像'
         this.form.newAvatarUrl = this.getAvatarUrl
@@ -220,6 +227,10 @@ export default {
     dialogClosed() {
       this.$refs.formRef.resetFields()
     },
+    //编程式导航
+    toUserInfo() {
+      this.$router.push('/userinfo')
+    },
   },
 }
 </script>
@@ -231,7 +242,7 @@ export default {
   background-color: #242633;
   width: 100%;
   height: 70px;
-  font-size: 22px;
+  font: 30px '站酷黑体';
   color: #fff;
 
   .collapse-btn {
@@ -255,7 +266,11 @@ export default {
       display: flex;
       height: 70px;
       align-items: center;
-
+      .userInfo {
+        font: 20px '站酷黑体';
+        margin-right: 24px;
+        cursor: pointer;
+      }
       .btn-fullscreen {
         transform: rotate(45deg);
         margin-right: 5px;
@@ -267,12 +282,16 @@ export default {
 
 .user-avator {
   margin-left: 20px;
-}
-.user-avator img {
-  display: block;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  img {
+    display: block;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  #defalut {
+    display: block;
+    border-radius: 50%;
+  }
 }
 
 .el-dropdown-link {

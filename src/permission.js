@@ -3,7 +3,7 @@
  * @Date: 2021-11-11 00:45:51
  * @Description:
  * @FilePath: \music-web-vue\src\permission.js
- * @LastEditTime: 2021-11-11 03:01:01
+ * @LastEditTime: 2021-11-18 13:19:40
  * @LastEditors: Please set LastEditors
  */
 // 路哟i有
@@ -46,12 +46,11 @@ router.beforeEach(async (to, from, next) => {
         next()
       } else {
         try {
-          // 获取用户信息
-
-          // router.addRoute(homeRouter)
-          console.log(router)
+          console.log(2)
+          // console.log(router)
           // 导航不会留下历史记录
-          next({ ...to, replace: true })
+          // next({ ...to, replace: true })
+          next()
         } catch (error) {
           // 移除token 返回登录
           await store.commit('USER_LOGOUT')

@@ -115,7 +115,7 @@ export default {
           console.log('this.$route', this.$route)
         } catch (error) {
           console.log(error)
-          this.$message.error(error)
+          this.$message.error(error.msg)
         }
       })
     },

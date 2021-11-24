@@ -3,11 +3,11 @@
  * @Date: 2021-10-24 22:51:19
  * @Description: 
  * @FilePath: \music-web-vue\src\views\system\Role.vue
- * @LastEditTime: 2021-11-14 15:16:57
+ * @LastEditTime: 2021-11-18 14:04:23
  * @LastEditors: Please set LastEditors
 -->
 <template>
-  <div>
+  <div class="container">
     <!-- 面包屑导航区 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
@@ -79,7 +79,7 @@
 
             <!-- 分配权限按钮 -->
             <el-tooltip class="item" effect="dark" content="分配权限" placement="top" :enterable="false">
-              <el-button type="warning" icon="el-icon-setting" @click="showSetRight(scope.row)" v-has="{ perm: 'role:set' }">分配权限</el-button>
+              <el-button type="warning" icon="el-icon-setting" @click="showSetRight(scope.row)" v-has="{ perm: 'role:set,menu:view' }">分配权限</el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -294,7 +294,7 @@ export default {
       if (res.code !== 200) return this.$message.error('取消权限失败!')
       // this.getRoleList()
       // vue 3.x不行了 也会刷新了
-      role.menus = res.data
+      role.menus = res.data.menuList
     },
 
     // 点击按钮展示分配权限对话框
@@ -307,16 +307,15 @@ export default {
         return this.$message.error('获取权限列表失败')
       }
       // 把获取到的权限数据保存到rightlist数组中
-      this.rightlist = res.data
+      this.rightlist = res.data.menus
       this.getDefKeys(role, this.defKeys)
       this.showSetRightVisible = true
     },
 
     // 通过递归，获取角色下所有的三级权限的id，并保存到defKeys数组中
     getDefKeys(node, arr) {
-      console.log(node)
       if (!node.menus) {
-        console.log(node.menus)
+        console.log('nodes', node)
         return arr.push(node.menuId)
       }
 

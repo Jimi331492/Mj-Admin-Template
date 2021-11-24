@@ -3,11 +3,11 @@
  * @Date: 2021-10-26 11:25:27
  * @Description: 
  * @FilePath: \music-web-vue\src\views\welcome\UserInfo.vue
- * @LastEditTime: 2021-11-16 00:13:05
+ * @LastEditTime: 2021-11-18 13:51:20
  * @LastEditors: Please set LastEditors
 -->
 <template>
-  <div>
+  <div class="container">
     <!-- 面包屑导航区 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>

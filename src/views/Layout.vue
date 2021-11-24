@@ -3,7 +3,7 @@
  * @Date: 2021-10-15 14:26:34
  * @Description: 
  * @FilePath: \music-web-vue\src\views\Layout.vue
- * @LastEditTime: 2021-11-16 05:26:33
+ * @LastEditTime: 2021-11-18 13:23:14
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -81,15 +81,6 @@ export default {
     overflow-y: scroll;
     background-color: #fff;
     box-sizing: border-box;
-
-    .login-background {
-      width: 100%;
-      height: 100%;
-      padding: 10px;
-      z-index: 0;
-      position: absolute;
-    }
-
     .login-background::before {
       content: '';
       width: 100%;
@@ -103,6 +94,13 @@ export default {
       // filter: blur(2px);
       // -webkit-filter: blur(2px);
       z-index: -1;
+    }
+    .login-background {
+      width: 100%;
+      height: 100%;
+      padding: 10px;
+      z-index: 0;
+      position: absolute;
     }
   }
 }

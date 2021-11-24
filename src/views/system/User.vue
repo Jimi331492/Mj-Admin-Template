@@ -3,11 +3,11 @@
  * @Date: 2021-10-24 22:51:08
  * @Description: 
  * @FilePath: \music-web-vue\src\views\system\User.vue
- * @LastEditTime: 2021-11-14 15:45:07
+ * @LastEditTime: 2021-11-18 14:04:53
  * @LastEditors: Please set LastEditors
 -->
 <template>
-  <div>
+  <div class="container">
     <!-- 面包屑导航区 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
@@ -95,8 +95,7 @@
       </el-table>
 
       <!-- 分页区域 -->
-      <el-pagination @current-change="handleCurrentChange" :page-size="limit" :page-sizes="[4]" layout="total, prev, pager, next, jumper" :total="total">
-      </el-pagination>
+      <el-pagination @current-change="handleCurrentChange" :page-size="limit" layout="total, prev, pager, next, jumper" :total="total"> </el-pagination>
     </el-card>
 
     <!-- 这是添加用户的对话框 -->

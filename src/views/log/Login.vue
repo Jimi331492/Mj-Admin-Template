@@ -2,8 +2,8 @@
  * @Author: 龙际妙
  * @Date: 2021-10-24 22:52:12
  * @Description: 
- * @FilePath: \music-web-vue\src\views\log\Log.vue
- * @LastEditTime: 2021-11-23 13:21:31
+ * @FilePath: \music-web-vue\src\views\log\Login.vue
+ * @LastEditTime: 2021-11-22 19:50:10
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -12,7 +12,7 @@
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>系统监控</el-breadcrumb-item>
-      <el-breadcrumb-item>操作日志</el-breadcrumb-item>
+      <el-breadcrumb-item>登录日志</el-breadcrumb-item>
     </el-breadcrumb>
 
     <!-- 卡片内容区 -->
@@ -20,26 +20,29 @@
       <!-- 搜索与添加区域 -->
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-input placeholder="请输入用户名" v-model="queryInfo.queryKey" clearable @clear="getLogList">
+          <el-input placeholder="请输入用户名" v-model="queryInfo.queryKey" clearable @clear="getLoginLogList">
             <template #append>
-              <el-button icon="el-icon-search" @click="getLogList"></el-button>
+              <el-button icon="el-icon-search" @click="getLoginLogList"></el-button>
             </template>
           </el-input>
         </el-col>
       </el-row>
 
       <!-- 用户列表区域 -->
-      <el-table :data="logList" border stripe>
-        <el-table-column type="index" align="center"></el-table-column>
-        <el-table-column prop="username" label="操作人" align="center" width="120px"></el-table-column>
-        <el-table-column prop="operation" label="操作内容" align="center" width="500px"> </el-table-column>
-        <el-table-column prop="time" label="操作时间" align="center">
+      <el-table :data="loginLogList" border stripe>
+        <el-table-column type="index"></el-table-column>
+        <el-table-column prop="username" label="用户名"></el-table-column>
+        <el-table-column prop="type" label="类型">
           <template v-slot="scope">
-            {{ this.format(scope.row.time) }}
+            <el-tag type="success" v-if="scope.row.type === '0'"> 登录 </el-tag>
+            <el-tag type="warning" v-else>登出</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="method" label="操作方法" align="center" width="120px"> </el-table-column>
-        <el-table-column prop="params" label="权限标识 " align="center" width="120px"> </el-table-column>
+        <el-table-column prop="loginTime" label="时间">
+          <template v-slot="scope">
+            {{ this.format(scope.row.loginTime) }}
+          </template>
+        </el-table-column>
       </el-table>
 
       <!-- 分页区域 -->
@@ -50,7 +53,7 @@
 </template>
 
 <script>
-import { queryLog } from '../../api/system/log'
+import { queryLoginLog } from '../../api/system/log'
 export default {
   data() {
     return {
@@ -63,29 +66,25 @@ export default {
         // 每页显示多少条数据
         pageSize: 5,
       },
-      logList: [],
+      loginLogList: [],
     }
   },
   created() {
-    this.getLogList()
+    this.getLoginLogList()
   },
   mounted() {},
   methods: {
-    async getLogList() {
-      const { data: res } = await queryLog(this.queryInfo)
-      if (res.code === 403) {
-        this.$router.replace('/404')
-      } else {
-        if (res.code !== 200) return this.$message.error('获取日志列表失败！')
-        this.logList = res.data.logList
-        this.total = res.data.total
-      }
+    async getLoginLogList() {
+      const { data: res } = await queryLoginLog(this.queryInfo)
+      if (res.code !== 200) return this.$message.error('获取登录日志列表失败！')
+      this.loginLogList = res.data.loginLogList
+      this.total = res.data.total
     },
     // 监听 CurrentChange 改变的事件
     handleCurrentChange(currentPage) {
       console.log(currentPage)
       this.queryInfo.currentPage = currentPage
-      this.getLogList()
+      this.getLoginLogList()
     },
     format(dateObject) {
       let array = [...dateObject]

@@ -3,7 +3,7 @@
  * @Date: 2021-10-13 13:21:41
  * @Description:
  * @FilePath: \music-web-vue\src\api\system\user.js
- * @LastEditTime: 2021-11-05 04:51:06
+ * @LastEditTime: 2021-11-22 19:37:00
  * @LastEditors: Please set LastEditors
  */
 import request from '../../utils/request'
@@ -13,6 +13,16 @@ export function Login(data) {
   //传数据写入data，不传则不需要
   return request({
     url: '/login',
+    method: 'post',
+    data,
+  })
+}
+
+// 用户登出
+export function Logout(data) {
+  //传数据写入data，不传则不需要
+  return request({
+    url: `/logout/${data}`,
     method: 'post',
     data,
   })
@@ -114,5 +124,14 @@ export function cancelRole(userId, roleId) {
   return request({
     url: `/user/${userId}/role/${roleId}`,
     method: 'delete',
+  })
+}
+
+// 查询用户人数
+export function getUserCount() {
+  //传数据写入data，不传则不需要
+  return request({
+    url: `/user/count`,
+    method: 'get',
   })
 }

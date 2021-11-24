@@ -3,7 +3,7 @@
  * @Date: 2021-10-15 14:27:16
  * @Description: 
  * @FilePath: \music-web-vue\src\components\public\Tags.vue
- * @LastEditTime: 2021-11-16 04:47:38
+ * @LastEditTime: 2021-11-21 02:15:24
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -130,7 +130,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .tags {
   position: relative;
   height: 30px;
