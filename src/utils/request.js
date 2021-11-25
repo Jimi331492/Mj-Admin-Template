@@ -3,7 +3,7 @@
  * @Date: 2021-10-13 13:22:12
  * @Description:
  * @FilePath: \music-web-vue\src\utils\request.js
- * @LastEditTime: 2021-11-08 20:32:23
+ * @LastEditTime: 2021-11-25 10:27:59
  * @LastEditors: Please set LastEditors
  */
 import axios from 'axios'
@@ -62,7 +62,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   (response) => {
     Nprogress.done()
-    if (response.code == 401) {
+    if (response.code === 401 || response.code === 403) {
       ElMessageBox.confirm('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
         confirmButtonText: '重新登录',
         cancelButtonText: '取消',

@@ -3,7 +3,7 @@
  * @Date: 2021-10-14 18:32:18
  * @Description:
  * @FilePath: \music-web-vue\src\main.js
- * @LastEditTime: 2021-11-21 19:56:59
+ * @LastEditTime: 2021-11-25 23:01:03
  * @LastEditors: Please set LastEditors
  */
 import { createApp } from 'vue'
@@ -11,7 +11,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import lodash from 'lodash'
-import * as echarts from 'echarts'
+
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import locale from 'element-plus/lib/locale/lang/zh-cn'
@@ -90,4 +90,4 @@ app.directive('no-has', (el, binding) => {
   }
 })
 
-app.use(router).use(store).use(ElementPlus, { locale }).use(VueParticles).use(echarts).mount('#app')
+app.use(router).use(store).use(ElementPlus, { locale }).use(VueParticles).mount('#app')
