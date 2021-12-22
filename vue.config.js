@@ -1,17 +1,16 @@
 /*
  * @Author: your name
  * @Date: 2021-07-28 06:07:22
- * @LastEditTime: 2021-12-22 11:16:37
+ * @LastEditTime: 2021-12-22 17:12:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
- * @FilePath: \music-web-vue\vue.config.js
+ * @FilePath: \MjAdmin-Tamplate-Vue\vue.config.js
  */
 const externals = {
   vue: 'Vue',
   'vue-router': 'VueRouter',
   vuex: 'Vuex',
   'element-plus': 'ElementPlus',
-  'vue-particles': 'VueParticles',
   axios: 'axios',
   lodash: '_',
   echarts: 'echarts',
@@ -21,7 +20,7 @@ const cdn = {
   css: ['https://unpkg.com/nprogress@0.2.0/nprogress.css', 'https://unpkg.com/element-plus@1.0.2-beta.65/lib/theme-chalk/index.css'],
 
   js: [
-    'https://cdn.jsdelivr.net/npm/vue@3.1.5/dist/vue.global.min.js',
+    'https://unpkg.com/vue@3.2.26/dist/vue.global.js',
     'https://unpkg.com/nprogress@0.2.0/nprogress.js',
     'https://cdn.jsdelivr.net/npm/vue-router@4.0.0/dist/vue-router.global.min.js',
     'https://unpkg.com/vuex@4.0.2/dist/vuex.global.js',
@@ -29,7 +28,6 @@ const cdn = {
     'https://unpkg.com/element-plus@1.0.2-beta.65/lib/index.full.js',
     'https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js',
     'https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js',
-    'https://cdn.jsdelivr.net/npm/vue-particles@1.0.9/src/vue-particles/index.min.js',
   ],
 }
 
@@ -56,5 +54,15 @@ module.exports = {
         return args
       })
     })
+  },
+  configureWebpack: {
+    plugins: [
+      require('unplugin-vue-components/webpack')({
+        /* options */
+      }),
+      require('unplugin-auto-import/webpack')({
+        /* options */
+      }),
+    ],
   },
 }
