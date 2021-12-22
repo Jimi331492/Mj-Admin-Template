@@ -3,14 +3,15 @@
  * @Date: 2021-10-14 18:32:39
  * @Description: 
  * @FilePath: \MjAdmin-Tamplate-Vue\README.md
- * @LastEditTime: 2021-12-22 18:00:51
+ * @LastEditTime: 2021-12-22 18:07:42
  * @LastEditors: Please set LastEditors
 -->
 # Mj-Admin-Template
 ## 一种RBAC权限模型基于shiro权限框架的通用权限管理模板，
-前端（对应master分支）：Vue3+路由VueRouter+状态管理Vuex+组件库ElementPlus Http库axios 数据可视化Echarts 粒子效果vue-particles（没找到对应CDN资源，所以首屏渲染比较慢）
-后端（对应springboot分支）：Springboot2+数据库操作mybatisPlus+Swagger3自动生成接口文档+权限框架shrio+jwt
-serve分支为静态部署的前端页面[点击预览](https://www.my3iao.com/Mj-Admin-Template/#/login)由于没有服务器后端项目没有部署，所以具体功能实现不了
+### 简介
+- 前端（对应master分支）：Vue3+路由VueRouter+状态管理Vuex+组件库ElementPlus Http库axios 数据可视化Echarts 粒子效果vue-particles（没找到对应CDN资源，所以首屏渲染比较慢）
+- 后端（对应springboot分支）：Springboot2+数据库操作mybatisPlus+Swagger3自动生成接口文档+权限框架shrio+jwt
+- serve分支为静态部署的前端页面[点击预览](https://www.my3iao.com/Mj-Admin-Template/#/login)由于没有服务器后端项目没有部署，所以具体功能实现不了
 
 ## 实现的功能
 
