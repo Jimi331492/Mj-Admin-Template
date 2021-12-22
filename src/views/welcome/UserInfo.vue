@@ -3,7 +3,7 @@
  * @Date: 2021-10-26 11:25:27
  * @Description: 
  * @FilePath: \music-web-vue\src\views\welcome\UserInfo.vue
- * @LastEditTime: 2021-11-18 13:51:20
+ * @LastEditTime: 2021-11-28 15:33:57
  * @LastEditors: Please set LastEditors
 -->
 <template>
@@ -19,15 +19,6 @@
       <el-collapse v-model="deaultArray" @change="handleChange">
         <el-collapse-item title="基础信息" name="baseInfo">
           <div class="baseInfo">
-            <!-- 用户头像 -->
-            <!-- <div class="avatar">
-              <el-avatar :src="userInfo.avatar" @error="errorHandler">
-                <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png" />
-              </el-avatar>
-              <el-button type="primary" @click="showDialog">设置头像</el-button>
-            </div> -->
-
-            <!-- 信息Table -->
             <el-descriptions class="baseInfo_table" :column="2" border>
               <template #extra>
                 <el-button type="primary" size="small" @click="showInfoDialog">修改</el-button>

@@ -1,10 +1,32 @@
+<!--
+ * @Author: 龙际妙
+ * @Date: 2021-10-14 18:32:18
+ * @Description: 
+ * @FilePath: \music-web-vue\public\index.html
+ * @LastEditTime: 2021-12-22 11:02:49
+ * @LastEditors: 
+-->
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <title>通用权限管理系统</title>
+    <title>
+      <%= htmlWebpackPlugin.options.isProd? '':'dev - '%>通用权限管理模板
+    </title>
+    <% if(htmlWebpackPlugin.options.isProd) { %>
+    <!-- css 文件 -->
+
+    <% for (var i in htmlWebpackPlugin.options.cdn && htmlWebpackPlugin.options.cdn.css) { %>
+    <link rel="stylesheet" href="<%= htmlWebpackPlugin.options.cdn.css[i] %>" />
+    <% } %>
+
+    <!-- js 文件 -->
+    <% for (var i in htmlWebpackPlugin.options.cdn && htmlWebpackPlugin.options.cdn.js) { %>
+      <script type="text/javascript" src="<%= htmlWebpackPlugin.options.cdn.js[i] %>"></script>
+    <% } 
+  }%>
   </head>
   <body>
     <noscript>
